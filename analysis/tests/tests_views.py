@@ -12,7 +12,7 @@ from dry_tests import (
     Context,
     POST,
 )
-from analysis.forms import OneTextForm, TwoTextForm, LoadTrainingDataForm
+from analysis.forms import OneTextForm, TwoTextForm, LoadTrainingDataForm, FindSimilarForm
 from analysis.models import TrainingData
 from analysis.tests.data import get_2x2_filepath, get_2x2_training_data
 from analysis.urls import app_name
@@ -485,12 +485,14 @@ class FindSimilarViewTestCase(TestCase):
         true_response = TrueResponse(
             status_code=200,
             context=Context(
-                keys=['object'],
+                keys=['object', 'form'],
                 items={
                     'object': self.training_data,
                 },
+                types={
+                    'form': FindSimilarForm
+                }
             )
         )
         current_response = request.get_response(self.client)
-
         self.assertTrueResponse(current_response, true_response)

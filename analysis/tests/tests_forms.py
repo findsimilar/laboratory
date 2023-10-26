@@ -8,6 +8,7 @@ from analysis.forms import (
     OneTextForm,
     TwoTextForm,
     LoadTrainingDataForm,
+    FindSimilarForm,
 )
 
 
@@ -78,4 +79,27 @@ class LoadTrainingDataFormSimpleTestCase(SimpleTestCase):
         )
 
         current_form = LoadTrainingDataForm()
+        self.assertTrueForm(current_form, true_form)
+
+
+class TestFindSimilarForm(SimpleTestCase):
+    """
+    One text form test
+    """
+
+    def test_fields(self):
+        """
+        Test available fields
+        """
+
+        true_form = TrueForm(
+            fields=Fields(
+                count=1,
+                types={
+                    'text': forms.CharField
+                }
+            )
+        )
+
+        current_form = FindSimilarForm()
         self.assertTrueForm(current_form, true_form)

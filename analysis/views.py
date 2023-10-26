@@ -2,6 +2,7 @@
 Analysis views
 """
 import os
+from django.shortcuts import get_object_or_404
 from django.views.generic import FormView, DetailView, ListView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
@@ -13,7 +14,7 @@ from analysis.functions import (
 )
 from .forms import (
     OneTextForm,
-    TwoTextForm, LoadTrainingDataForm,
+    TwoTextForm, LoadTrainingDataForm, FindSimilarForm,
 )
 from .models import TrainingData
 
@@ -164,3 +165,18 @@ class TrainingDataDeleteView(DeleteView):
     model = TrainingData
     template_name = 'analysis/training_data_delete_confirm.html'
     success_url = reverse_lazy('analysis:training_data_list')
+
+
+class FindSimilarFormView(FormView):
+    form_class = FindSimilarForm
+    template_name = 'analysis/find_similar.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        self.object = get_object_or_404(TrainingData, pk=pk)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.object
+        return context
