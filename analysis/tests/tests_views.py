@@ -3,6 +3,7 @@ Tests for views
 """
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from django_find_similar.models import CheckResult
 from dry_tests import (
     TestCase,
     SimpleTestCase,
@@ -12,6 +13,8 @@ from dry_tests import (
     Context,
     POST,
 )
+from django_find_similar.forms import FindSimilarForm
+from mixer.backend.django import mixer
 from analysis.forms import OneTextForm, TwoTextForm, LoadTrainingDataForm
 from analysis.models import TrainingData
 from analysis.tests.data import get_2x2_filepath, get_2x2_training_data
@@ -485,12 +488,81 @@ class FindSimilarViewTestCase(TestCase):
         true_response = TrueResponse(
             status_code=200,
             context=Context(
-                keys=['object'],
+                keys=['object', 'form'],
                 items={
                     'object': self.training_data,
                 },
+                types={
+                    'form': FindSimilarForm
+                }
             )
         )
         current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
 
+    def test_post(self):
+
+        data = {
+            'text': '1',
+            'language': 'english',
+            'remove_stopwords': True,
+        }
+
+        request = Request(
+            url=self.url,
+            method=POST,
+            data=data
+        )
+
+        true_response = TrueResponse(
+            status_code=302,
+            redirect_url=f'/analysis/result-list/'
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+
+class ResultListTestCase(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:result_list')
+
+    def test_get(self):
+        request = Request(
+            url=self.url
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                keys=['object_list'],
+            ),
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+
+class TestResultDetailView(TestCase):
+
+    def setUp(self):
+        self.check_result = mixer.blend(CheckResult)
+        self.url = reverse('analysis:result', kwargs={'pk': self.check_result.pk})
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                items={
+                    'object': self.check_result,
+                }
+            )
+        )
+
+        current_response = request.get_response(self.client)
         self.assertTrueResponse(current_response, true_response)

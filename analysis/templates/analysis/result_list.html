@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block main %}
+    <h2>Results List</h2>
+{% endblock %}
+{% block results %}
+ <table class="table">
+        <tr>
+            <th>Text</th>
+            <th>Language</th>
+            <th>Remove Stop Words</th>
+            <th>Created</th>
+            <th>Detail</th>
+        </tr>
+    {% for result in object_list %}
+        {% with result.text as text %}
+        <tr>
+            <td>
+                <a href="{% url 'analysis:result' pk=result.pk %}">
+                    {{text.text}}
+                </a>
+            </td>
+            <td>{{text.language}}</td>
+            <td>{{text.remove_stopwords}}</td>
+            <td>
+                {{result.create}}
+            </td>
+            <td>
+                <a class="btn btn-info" href="{% url 'analysis:result' pk=result.pk %}">
+                    Detail
+                </a>
+            </td>
+        </tr>
+        {% endwith %}
+    {% endfor %}
+    </table>
+{% endblock %}

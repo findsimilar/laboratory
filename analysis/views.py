@@ -2,9 +2,14 @@
 Analysis views
 """
 import os
+from django.shortcuts import get_object_or_404
 from django.views.generic import FormView, DetailView, ListView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
+from django_find_similar.forms import FindSimilarForm
+from django_find_similar.models import TextToken, TokenTextAdapter, CheckResult
+from find_similar import find_similar
+
 from analysis.functions import (
     analyze_one_item,
     analyze_two_items,
@@ -13,9 +18,9 @@ from analysis.functions import (
 )
 from .forms import (
     OneTextForm,
-    TwoTextForm, LoadTrainingDataForm,
+    TwoTextForm, LoadTrainingDataForm
 )
-from .models import TrainingData
+from .models import TrainingData, to_list
 
 
 class TokenizeOneView(FormView):
@@ -164,3 +169,71 @@ class TrainingDataDeleteView(DeleteView):
     model = TrainingData
     template_name = 'analysis/training_data_delete_confirm.html'
     success_url = reverse_lazy('analysis:training_data_list')
+
+
+class FindSimilarFormView(FormView):
+    form_class = FindSimilarForm
+    template_name = 'analysis/find_similar.html'
+    success_url = reverse_lazy('analysis:result_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        self.object = get_object_or_404(TrainingData, pk=pk)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.object
+        return context
+
+    def form_valid(self, form):
+        # Get cleaned data from FindSimilarForm
+        data = form.cleaned_data
+
+        text = data['text']
+        language = data['language']
+        remove_stopwords = data['remove_stopwords']
+
+        # Get or create TextToken model
+        text_token, _ = TextToken.objects.get_or_create(
+            text=text,
+            language=language,
+            remove_stopwords=remove_stopwords,
+        )
+        # Adapt TextToken for find_similar
+        adapter = TokenTextAdapter(text_token)
+
+        # save all data from dataset to TextToken
+        # self.object
+        data_list = to_list(self.object.get_dataframe())
+
+        new_token_texts = []
+        for item in data_list:
+            item_text_token = TextToken(
+                text=item,
+                language=language,
+                remove_stopwords=remove_stopwords
+            )
+            new_token_texts.append(item_text_token)
+
+        TextToken.objects.bulk_create(new_token_texts, ignore_conflicts=True)
+
+        # Adapt TextToken
+        adapters = [TokenTextAdapter(item) for item in TextToken.objects.all()]
+        # use find_similar
+        result = find_similar(adapter, adapters, count=len(data_list))
+
+        # save results to the database
+        CheckResult.save_result(text_token, result)
+        return super().form_valid(form)
+
+
+class ResultListView(ListView):
+    model = CheckResult
+    template_name = 'analysis/result_list.html'
+    ordering = ['-create']
+
+
+class ResultDetailView(DetailView):
+    model = CheckResult
+    template_name = 'analysis/result.html'

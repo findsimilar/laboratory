@@ -1,6 +1,8 @@
 """
 Analisys models
 """
+from io import StringIO
+
 import pandas as pd
 from django.db import models
 
@@ -12,7 +14,7 @@ class TrainingData(models.Model):
     update = models.DateTimeField(auto_now=True)
 
     def get_dataframe(self) -> pd.DataFrame:
-        return pd.read_json(self.data, dtype=str)
+        return pd.read_json(StringIO(self.data), dtype=str)
 
     @property
     def columns_count(self):

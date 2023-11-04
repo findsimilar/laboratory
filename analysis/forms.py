@@ -35,3 +35,12 @@ class LoadTrainingDataForm(forms.Form):
     sheet_name = forms.IntegerField(required=False, initial=0, widget=forms.NumberInput(attrs={
         'class': 'form-control'
     }))
+
+
+class FindSimilarForm(forms.Form):
+    """
+    Form with one text
+    """
+    text = forms.CharField(max_length=128, widget=forms.TextInput(attrs={
+        'class': 'form-control'
+    }))

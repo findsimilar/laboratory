@@ -3,6 +3,8 @@ Test urls module
 """
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
+from django_find_similar.models import CheckResult
+from mixer.backend.django import mixer
 
 from analysis.tests.data import get_2x2_training_data
 
@@ -38,6 +40,10 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
                 'url': 'training_data_list',
                 'reverse': 'training-data-list/',
             },
+            {
+                'url': 'result_list',
+                'reverse': 'result-list/',
+            },
         ]
         for url in urls:
             app_url = f'{app_name}:{url["url"]}'
@@ -58,6 +64,7 @@ class TestUrlsTestCase(TestCase):
         """
 
         training_data = get_2x2_training_data()
+        check_result = mixer.blend(CheckResult)
 
         app_name = 'analysis'
         urls = [
@@ -81,6 +88,13 @@ class TestUrlsTestCase(TestCase):
                     'pk': training_data.pk
                 },
                 'reverse': f'find-similar/{training_data.pk}/',
+            },
+            {
+                'url': 'result',
+                'kwargs': {
+                    'pk': check_result.pk
+                },
+                'reverse': f'result/{check_result.pk}/',
             },
         ]
         for url in urls:
