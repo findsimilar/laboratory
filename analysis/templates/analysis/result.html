@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block main %}
+{% with object.text as text %}
+    <table class="table border">
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>
+                <b>Text</b>
+            </td>
+            <td>
+                {{text.text}}
+            </td>
+        </tr>
+         <tr>
+            <td>
+                <b>Language</b>
+            </td>
+            <td>
+                {{text.language}}
+            </td>
+        </tr>
+         <tr>
+            <td>
+                <b>Remove Stop Words</b>
+            </td>
+            <td>
+                {{text.remove_stopwords}}
+            </td>
+        </tr>
+    </table>
+{% endwith %}
+{% endblock %}
+{% block results %}
+
+{% with object.checkresultitem_set.all as items %}
+ <table class="table table-striped">
+        <tr>
+            <th>order</th>
+            <th>text</th>
+            <th>cos</th>
+            <th>%</th>
+        </tr>
+    {% for item in items %}
+        <tr>
+            <td>{{item.order}}</td>
+            <td>{{item.text.text}}</td>
+            <td>{{item.cos}}</td>
+            <td>{{item.cos_percent}}%</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endwith %}
+{% endblock %}

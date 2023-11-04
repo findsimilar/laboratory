@@ -15,4 +15,6 @@ urlpatterns = [
     path('find-similar/<int:pk>/', views.FindSimilarFormView.as_view(), name="find_similar"),
     path('delete-training-data/<int:pk>/', views.TrainingDataDeleteView.as_view(), name="delete_training_data"),
     path('training-data-list/', views.TrainingDataListView.as_view(), name="training_data_list"),
+    path('result-list/', views.ResultListView.as_view(), name="result_list"),
+    path('result/<int:pk>/', views.ResultDetailView.as_view(), name="result"),
 ]
