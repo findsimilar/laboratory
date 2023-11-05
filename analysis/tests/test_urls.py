@@ -48,6 +48,14 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
                 'url': 'text_token_list',
                 'reverse': 'text-token-list/',
             },
+            {
+                'url': 'clear_training_data',
+                'reverse': 'clear-training-data/',
+            },
+            {
+                'url': 'clear_text_token',
+                'reverse': 'clear-text-token/',
+            },
         ]
         for url in urls:
             app_url = f'{app_name}:{url["url"]}'

@@ -612,3 +612,83 @@ class TestTextTokenDetailView(TestCase):
 
         current_response = request.get_response(self.client)
         self.assertTrueResponse(current_response, true_response)
+
+
+class ClearTrainingData(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:clear_training_data')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            content_values=FORM_CONTENT_VALUES
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+    def test_post(self):
+        request = Request(
+            url=self.url,
+            method=POST,
+        )
+
+        true_response = TrueResponse(
+            status_code=302,
+            redirect_url='/analysis/training-data-list/'
+        )
+
+        # db state before
+        mixer.cycle(2).blend(TrainingData, data={})
+        self.assertTrue(TrainingData.objects.all().exists())
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+        # db state after
+        self.assertFalse(TrainingData.objects.all().exists())
+
+
+class ClearTextToken(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:clear_text_token')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            content_values=FORM_CONTENT_VALUES
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+    def test_post(self):
+        request = Request(
+            url=self.url,
+            method=POST,
+        )
+
+        true_response = TrueResponse(
+            status_code=302,
+            redirect_url='/analysis/text-token-list/'
+        )
+
+        # db state before
+        mixer.cycle(2).blend(TextToken)
+        self.assertTrue(TextToken.objects.all().exists())
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+        # db state after
+        self.assertFalse(TextToken.objects.all().exists())

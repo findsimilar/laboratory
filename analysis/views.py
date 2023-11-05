@@ -2,7 +2,9 @@
 Analysis views
 """
 import os
-from django.shortcuts import get_object_or_404
+
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import FormView, DetailView, ListView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
@@ -248,3 +250,17 @@ class TextTokenListView(ListView):
 class TextTokenDetailView(DetailView):
     model = TextToken
     template_name = 'analysis/text_token.html'
+
+
+def clear_training_data(request):
+    if request.method == 'POST':
+        TrainingData.objects.all().delete()
+        return HttpResponseRedirect(reverse('analysis:training_data_list'))
+    return render(request, 'analysis/clear_data.html', context={'model_name': 'Training Data'})
+
+
+def clear_text_token(request):
+    if request.method == 'POST':
+        TextToken.objects.all().delete()
+        return HttpResponseRedirect(reverse('analysis:text_token_list'))
+    return render(request, 'analysis/clear_data.html', context={'model_name': 'Text Tokens'})
