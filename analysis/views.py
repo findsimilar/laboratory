@@ -237,3 +237,14 @@ class ResultListView(ListView):
 class ResultDetailView(DetailView):
     model = CheckResult
     template_name = 'analysis/result.html'
+
+
+class TextTokenListView(ListView):
+    model = TextToken
+    template_name = 'analysis/text_token_list.html'
+    ordering = ['-create']
+
+
+class TextTokenDetailView(DetailView):
+    model = TextToken
+    template_name = 'analysis/text_token.html'

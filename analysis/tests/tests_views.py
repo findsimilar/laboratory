@@ -3,7 +3,7 @@ Tests for views
 """
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
-from django_find_similar.models import CheckResult
+from django_find_similar.models import CheckResult, TextToken
 from dry_tests import (
     TestCase,
     SimpleTestCase,
@@ -560,6 +560,52 @@ class TestResultDetailView(TestCase):
             context=Context(
                 items={
                     'object': self.check_result,
+                }
+            )
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+
+class TestTextTokenListView(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:text_token_list')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                keys=['object_list']
+            )
+        )
+
+        current_response = request.get_response(self.client)
+
+        self.assertTrueResponse(current_response, true_response)
+
+
+class TestTextTokenDetailView(TestCase):
+
+    def setUp(self):
+        self.text_token = mixer.blend(TextToken)
+        self.url = reverse('analysis:text_token', kwargs={'pk': self.text_token.pk})
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                items={
+                    'object': self.text_token,
                 }
             )
         )
