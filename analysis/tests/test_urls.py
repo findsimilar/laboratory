@@ -3,7 +3,7 @@ Test urls module
 """
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
-from django_find_similar.models import CheckResult
+from django_find_similar.models import CheckResult, TextToken
 from mixer.backend.django import mixer
 
 from analysis.tests.data import get_2x2_training_data
@@ -44,6 +44,22 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
                 'url': 'result_list',
                 'reverse': 'result-list/',
             },
+            {
+                'url': 'text_token_list',
+                'reverse': 'text-token-list/',
+            },
+            {
+                'url': 'clear_training_data',
+                'reverse': 'clear-training-data/',
+            },
+            {
+                'url': 'clear_text_token',
+                'reverse': 'clear-text-token/',
+            },
+            {
+                'url': 'tokenize',
+                'reverse': 'tokenize/',
+            },
         ]
         for url in urls:
             app_url = f'{app_name}:{url["url"]}'
@@ -65,6 +81,7 @@ class TestUrlsTestCase(TestCase):
 
         training_data = get_2x2_training_data()
         check_result = mixer.blend(CheckResult)
+        text_token = mixer.blend(TextToken)
 
         app_name = 'analysis'
         urls = [
@@ -95,6 +112,13 @@ class TestUrlsTestCase(TestCase):
                     'pk': check_result.pk
                 },
                 'reverse': f'result/{check_result.pk}/',
+            },
+            {
+                'url': 'text_token',
+                'kwargs': {
+                    'pk': text_token.pk
+                },
+                'reverse': f'text-token/{text_token.pk}/',
             },
         ]
         for url in urls:

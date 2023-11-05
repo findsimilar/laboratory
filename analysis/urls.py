@@ -17,4 +17,9 @@ urlpatterns = [
     path('training-data-list/', views.TrainingDataListView.as_view(), name="training_data_list"),
     path('result-list/', views.ResultListView.as_view(), name="result_list"),
     path('result/<int:pk>/', views.ResultDetailView.as_view(), name="result"),
+    path('text-token-list/', views.TextTokenListView.as_view(), name="text_token_list"),
+    path('text-token/<int:pk>/', views.TextTokenDetailView.as_view(), name="text_token"),
+    path('clear-training-data/', views.clear_training_data, name="clear_training_data"),
+    path('clear-text-token/', views.clear_text_token, name="clear_text_token"),
+    path('tokenize/', views.TokenizeView.as_view(), name="tokenize"),
 ]

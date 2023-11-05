@@ -3,7 +3,7 @@ Tests for views
 """
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
-from django_find_similar.models import CheckResult
+from django_find_similar.models import CheckResult, TextToken, Token
 from dry_tests import (
     TestCase,
     SimpleTestCase,
@@ -13,13 +13,12 @@ from dry_tests import (
     Context,
     POST,
 )
-from django_find_similar.forms import FindSimilarForm
+from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
 from mixer.backend.django import mixer
 from analysis.forms import OneTextForm, TwoTextForm, LoadTrainingDataForm
 from analysis.models import TrainingData
 from analysis.tests.data import get_2x2_filepath, get_2x2_training_data
 from analysis.urls import app_name
-from analysis.functions import load_training_data
 
 
 FORM_CONTENT_VALUES = [
@@ -566,3 +565,183 @@ class TestResultDetailView(TestCase):
 
         current_response = request.get_response(self.client)
         self.assertTrueResponse(current_response, true_response)
+
+
+class TestTextTokenListView(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:text_token_list')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                keys=['object_list']
+            )
+        )
+
+        current_response = request.get_response(self.client)
+
+        self.assertTrueResponse(current_response, true_response)
+
+
+class TestTextTokenDetailView(TestCase):
+
+    def setUp(self):
+        self.text_token = mixer.blend(TextToken)
+        self.url = reverse('analysis:text_token', kwargs={'pk': self.text_token.pk})
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                items={
+                    'object': self.text_token,
+                }
+            )
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+
+class ClearTrainingData(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:clear_training_data')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            content_values=FORM_CONTENT_VALUES
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+    def test_post(self):
+        request = Request(
+            url=self.url,
+            method=POST,
+        )
+
+        true_response = TrueResponse(
+            status_code=302,
+            redirect_url='/analysis/training-data-list/'
+        )
+
+        # db state before
+        mixer.cycle(2).blend(TrainingData, data={})
+        self.assertTrue(TrainingData.objects.all().exists())
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+        # db state after
+        self.assertFalse(TrainingData.objects.all().exists())
+
+
+class ClearTextToken(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:clear_text_token')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            content_values=FORM_CONTENT_VALUES
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+    def test_post(self):
+        request = Request(
+            url=self.url,
+            method=POST,
+        )
+
+        true_response = TrueResponse(
+            status_code=302,
+            redirect_url='/analysis/text-token-list/'
+        )
+
+        # db state before
+        mixer.cycle(2).blend(TextToken)
+        self.assertTrue(TextToken.objects.all().exists())
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+        # db state after
+        self.assertFalse(TextToken.objects.all().exists())
+
+
+class TokenizeViewTestCase(TestCase):
+
+    def setUp(self):
+        self.url = reverse('analysis:tokenize')
+
+    def test_get(self):
+        request = Request(
+            url=self.url,
+        )
+
+        true_response = TrueResponse(
+            status_code=200,
+            context=Context(
+                types={
+                    'form': FindSimilarParamsForm,
+                }
+            ),
+            content_values=FORM_CONTENT_VALUES
+        )
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+    def test_post(self):
+
+        data = {
+            'language': 'english',
+            'remove_stopwords': True,
+        }
+
+        request = Request(
+            url=self.url,
+            method=POST,
+            data=data,
+        )
+
+        true_response = TrueResponse(
+            status_code=302,
+            redirect_url='/analysis/training-data-list/',
+        )
+
+        self.training_data = get_2x2_training_data()
+        # db before
+        self.assertFalse(TextToken.objects.all().exists())
+        self.assertFalse(Token.objects.all().exists())
+
+        current_response = request.get_response(self.client)
+        self.assertTrueResponse(current_response, true_response)
+
+        # db after
+        self.assertTrue(TextToken.objects.all().exists())
+        self.assertTrue(Token.objects.all().exists())

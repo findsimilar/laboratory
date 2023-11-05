@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block main %}
+{% with object as text %}
+    <table class="table border">
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>
+                <b>Text</b>
+            </td>
+            <td>
+                {{text.text}}
+            </td>
+        </tr>
+         <tr>
+            <td>
+                <b>Language</b>
+            </td>
+            <td>
+                {{text.language}}
+            </td>
+        </tr>
+         <tr>
+            <td>
+                <b>Remove Stop Words</b>
+            </td>
+            <td>
+                {{text.remove_stopwords}}
+            </td>
+        </tr>
+    </table>
+{% endwith %}
+{% endblock %}
+{% block results %}
+
+{% with object.token_set.all as items %}
+ <table class="table table-striped">
+        <tr>
+            <th>text</th>
+        </tr>
+    {% for item in items %}
+        <tr>
+            <td>{{item.value}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endwith %}
+{% endblock %}

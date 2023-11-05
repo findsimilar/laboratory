@@ -2,6 +2,7 @@
 Forms
 """
 from django import forms
+from django_find_similar.forms import FindSimilarForm
 
 
 class OneTextForm(forms.Form):
@@ -33,14 +34,5 @@ class LoadTrainingDataForm(forms.Form):
         'class': 'form-control'
     }))
     sheet_name = forms.IntegerField(required=False, initial=0, widget=forms.NumberInput(attrs={
-        'class': 'form-control'
-    }))
-
-
-class FindSimilarForm(forms.Form):
-    """
-    Form with one text
-    """
-    text = forms.CharField(max_length=128, widget=forms.TextInput(attrs={
         'class': 'form-control'
     }))
