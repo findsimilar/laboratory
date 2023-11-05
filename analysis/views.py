@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import FormView, DetailView, ListView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
-from django_find_similar.forms import FindSimilarForm
+from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
 from django_find_similar.models import TextToken, TokenTextAdapter, CheckResult
 from find_similar import find_similar
 
@@ -20,7 +20,8 @@ from analysis.functions import (
 )
 from .forms import (
     OneTextForm,
-    TwoTextForm, LoadTrainingDataForm
+    TwoTextForm,
+    LoadTrainingDataForm,
 )
 from .models import TrainingData, to_list
 
@@ -264,3 +265,33 @@ def clear_text_token(request):
         TextToken.objects.all().delete()
         return HttpResponseRedirect(reverse('analysis:text_token_list'))
     return render(request, 'analysis/clear_data.html', context={'model_name': 'Text Tokens'})
+
+
+class TokenizeView(FormView):
+    form_class = FindSimilarParamsForm
+    template_name = 'analysis/tokenize.html'
+    success_url = reverse_lazy('analysis:training_data_list')
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        language = cleaned_data['language']
+        remove_stopwords = cleaned_data['remove_stopwords']
+        # Make all training data (In a future we shout get just one)
+        training_data_list = TrainingData.objects.all()
+        for training_data in training_data_list:
+            data_list = to_list(training_data.get_dataframe())
+    
+            new_token_texts = []
+            for item in data_list:
+                item_text_token = TextToken(
+                    text=item,
+                    language=language,
+                    remove_stopwords=remove_stopwords
+                )
+                new_token_texts.append(item_text_token)
+        TextToken.objects.bulk_create(new_token_texts, ignore_conflicts=True)
+
+        for text_token in TextToken.objects.all():
+            text_token.create_tokens()
+        
+        return super().form_valid(form)

@@ -1,6 +1,6 @@
 Django==4.2.6
 django-dry-tests==1.0.0
-django-find-similar==1.1.0
+django-find-similar==1.2.0
 pandas==2.1.1
 openpyxl==3.1.2
 coverage==7.3.2
