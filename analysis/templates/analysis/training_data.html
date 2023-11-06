@@ -9,7 +9,7 @@
 <a class="btn btn-danger" href="{% url 'analysis:delete_training_data' pk=object.pk %}">Delete</a>
 {% endblock %}
 {% block results %}
-    {% with object.get_dataframe as data %}
+    {% with object.display_dataframe as data %}
     <table class="table">
         <tr>
             {% for column in data.columns %}

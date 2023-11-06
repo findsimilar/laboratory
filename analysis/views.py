@@ -1,6 +1,7 @@
 """
 Analysis views
 """
+import cProfile
 import os
 
 from django.http import HttpResponseRedirect
@@ -9,8 +10,9 @@ from django.views.generic import FormView, DetailView, ListView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
-from django_find_similar.models import TextToken, TokenTextAdapter, CheckResult
+from django_find_similar.models import TextToken, TokenTextAdapter, CheckResult, Token, CheckResultItem
 from find_similar import find_similar
+from find_similar.tokenize import tokenize
 
 from analysis.functions import (
     analyze_one_item,
@@ -149,7 +151,6 @@ class LoadTrainingDataView(FormView):
         uploaded_path = self.handle_uploaded_file(excel_file)
         name = data['name']
         sheet_name = data.get('sheet_name', 0)
-        print('SHEET_NAME', sheet_name)
         self.training_data = load_training_data(name=name, filepath=uploaded_path, sheet_name=sheet_name)
         return super().form_valid(form)
 
@@ -208,7 +209,7 @@ class FindSimilarFormView(FormView):
 
         # save all data from dataset to TextToken
         # self.object
-        data_list = to_list(self.object.get_dataframe())
+        data_list = to_list(self.object.get_dataframe)
 
         new_token_texts = []
         for item in data_list:
@@ -227,7 +228,7 @@ class FindSimilarFormView(FormView):
         result = find_similar(adapter, adapters, count=len(data_list))
 
         # save results to the database
-        CheckResult.save_result(text_token, result)
+        # CheckResult.save_result(text_token, result)
         return super().form_valid(form)
 
 
@@ -246,6 +247,10 @@ class TextTokenListView(ListView):
     model = TextToken
     template_name = 'analysis/text_token_list.html'
     ordering = ['-create']
+    paginate_by = 3000
+
+    def get_queryset(self):
+        return TextToken.objects.prefetch_related('token_set').all()
 
 
 class TextTokenDetailView(DetailView):
@@ -256,12 +261,19 @@ class TextTokenDetailView(DetailView):
 def clear_training_data(request):
     if request.method == 'POST':
         TrainingData.objects.all().delete()
+        CheckResultItem.objects.all().delete()
+        Token.objects.all().delete()
+        CheckResult.objects.all().delete()
+        TextToken.objects.all().delete()
         return HttpResponseRedirect(reverse('analysis:training_data_list'))
     return render(request, 'analysis/clear_data.html', context={'model_name': 'Training Data'})
 
 
 def clear_text_token(request):
     if request.method == 'POST':
+        CheckResultItem.objects.all().delete()
+        Token.objects.all().delete()
+        CheckResult.objects.all().delete()
         TextToken.objects.all().delete()
         return HttpResponseRedirect(reverse('analysis:text_token_list'))
     return render(request, 'analysis/clear_data.html', context={'model_name': 'Text Tokens'})
@@ -273,25 +285,43 @@ class TokenizeView(FormView):
     success_url = reverse_lazy('analysis:training_data_list')
 
     def form_valid(self, form):
+        # profiler = cProfile.Profile()
+        # profiler.enable()
         cleaned_data = form.cleaned_data
         language = cleaned_data['language']
         remove_stopwords = cleaned_data['remove_stopwords']
         # Make all training data (In a future we shout get just one)
         training_data_list = TrainingData.objects.all()
+        all_token_texts = []
         for training_data in training_data_list:
-            data_list = to_list(training_data.get_dataframe())
-    
-            new_token_texts = []
+            data_list = to_list(training_data.get_dataframe)
+
             for item in data_list:
-                item_text_token = TextToken(
+                all_token_texts.append(TextToken(
                     text=item,
                     language=language,
                     remove_stopwords=remove_stopwords
-                )
-                new_token_texts.append(item_text_token)
-        TextToken.objects.bulk_create(new_token_texts, ignore_conflicts=True)
+                ))
 
-        for text_token in TextToken.objects.all():
-            text_token.create_tokens()
-        
+        TextToken.objects.bulk_create(all_token_texts, ignore_conflicts=True)
+
+        all_token_texts = TextToken.objects.all()
+
+        all_tokens = []
+        # for text_token in TextToken.objects.all():
+        for text_token in all_token_texts:
+            # text_token.create_tokens()
+            token_set = tokenize(
+                text_token.text,
+                language=text_token.language,
+                remove_stopwords=text_token.remove_stopwords
+            )
+            # tokens = map(lambda text_str: Token(value=text_str, token_text=text_token), token_set)
+            # tokens = [Token(value=text_str, token_text=text_token) for text_str in token_set]
+            # all_tokens += tokens
+            for text_str in token_set:
+                all_tokens.append(Token(value=text_str, token_text=text_token))
+
+        Token.objects.bulk_create(all_tokens, ignore_conflicts=True)
+        # profiler.disable()
         return super().form_valid(form)

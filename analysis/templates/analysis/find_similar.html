@@ -9,7 +9,7 @@
 </form>
 {% endblock %}
 {% block results %}
-    {% with object.get_dataframe as data %}
+    {% with object.display_dataframe as data %}
     <table class="table">
         <tr>
             {% for column in data.columns %}

@@ -384,7 +384,7 @@ class TrainingDataDetailViewTestCase(TestCase):
             self.training_data.name,
         ]
 
-        dataframe = self.training_data.get_dataframe()
+        dataframe = self.training_data.get_dataframe
 
         # add headers
         columns = dataframe.columns

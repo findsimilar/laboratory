@@ -251,7 +251,7 @@ class FunctionsTestCase(TestCase):
         expected = get_2x2_expected_data()
         result = load_training_data('first', filepath, sheet_name=0, printer=self.testing_printer)
         self.assertTrue(isinstance(result, TrainingData))
-        self.assertTrue(expected.equals(result.get_dataframe()))
+        self.assertTrue(expected.equals(result.get_dataframe))
 
         # prints
         expected_prints = [
@@ -276,10 +276,10 @@ class FunctionsTestCase(TestCase):
 
         training_data = get_2x2_training_data()
         text = '2'
-        dataframe = training_data.get_dataframe()
+        dataframe = training_data.get_dataframe
         similars = find_similar_dataframe(
             text,
-            training_data.get_dataframe(),
+            training_data.get_dataframe,
             find_similar_2x2,
             printer=self.testing_printer
         )
