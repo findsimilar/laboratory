@@ -21,7 +21,7 @@ class NumpyTestCase(SimpleTestCase):
         data_matrix = np.matrix(data, dtype=str)
 
         matrix_shape = data_matrix.shape
-        print('SHAPE', matrix_shape)
+        # print('SHAPE', matrix_shape)
 
         self.assertIsInstance(data_matrix, np.matrix)
 
@@ -46,15 +46,6 @@ class NumpyTestCase(SimpleTestCase):
         # one way how to get list from matrix
         data_list = list(np.array(data_matrix).reshape(-1,))
 
-        """
-        text_to_check,
-    texts,
-    language="russian",
-    count=5,
-    dictionary=None,
-    remove_stopwords=True,
-    keywords=None,
-        """
 
         find_similar_vector_two = np.vectorize(find_similar, excluded=['texts', 'language', 'count', 'dictionary', 'keywords'])
         similars_matrix = find_similar_vector_two(text_to_check=token_text_matrix, texts=data_list)
@@ -82,15 +73,15 @@ class NumpyTestCase(SimpleTestCase):
 
         similar_shaped_matrix = reshape_list_vectorize(similars_matrix)
 
-        print('STR MATRIX')
+        #print('STR MATRIX')
         print(data_matrix)
-        print('TokenText MATRIX')
+        #print('TokenText MATRIX')
         print(token_text_matrix)
-        print('Similars MATRIX')
+        #print('Similars MATRIX')
         print(similars_matrix)
-        print('cos MATRIX')
+        #print('cos MATRIX')
         print(cos_matrix)
-        print('reshaped MATRIX')
+        #print('reshaped MATRIX')
         print(similar_shaped_matrix)
 
         first = similar_shaped_matrix[0, 0]
@@ -103,15 +94,15 @@ class NumpyTestCase(SimpleTestCase):
 
         first_texts = token_to_text(first)
 
-        print('BEGIN')
+        #print('BEGIN')
         print(data_matrix)
-        print('FIRST')
+        #print('FIRST')
         print(first_texts)
 
         second = similar_shaped_matrix[1, 0]
         second_texts = token_to_text(second)
 
-        print('SECOND')
+        #print('SECOND')
         print(second_texts)
 
         # self.assertTrue(np.array_equal(first_texts, data_matrix))
