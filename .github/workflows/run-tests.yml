@@ -22,5 +22,5 @@ jobs:
     - name: Run tests
       run: |
         coverage run --source='.' manage.py test
-	    coverage html --omit=laboratory/asgi.py,laboratory/wsgi.py,manage.py,analysis/management/*
-	    coverage report --omit=laboratory/asgi.py,laboratory/wsgi.py,manage.py,analysis/management/* --fail-under=100
+        coverage html --omit=laboratory/asgi.py,laboratory/wsgi.py,manage.py,analysis/management/*
+        coverage report --omit=laboratory/asgi.py,laboratory/wsgi.py,manage.py,analysis/management/* --fail-under=100
