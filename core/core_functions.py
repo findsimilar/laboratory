@@ -26,13 +26,17 @@ def str_to_token_text(text: str) -> TokenText:
 tokenize_vector = np.vectorize(str_to_token_text)
 
 
+def matrix_to_one_line(matrix: np.matrix) -> np.ndarray:
+    return np.array(matrix).reshape(-1, )
+
+
 def matrix_to_list(matrix: np.matrix) -> list:
     """
     Create list from matrix
     :param matrix: matrix with data
     :return: list of all matrix values
     """
-    return list(np.array(matrix).reshape(-1, ))
+    return list(matrix_to_one_line(matrix))
 
 
 find_similar_vector = np.vectorize(find_similar, otypes=[TokenText], excluded=[
@@ -60,3 +64,22 @@ def get_matrix_head(matrix: np.matrix, count: int = 1):
 
 
 # get_matrix_head_vector = np.vectorize(get_matrix_head, excluded=['count'])
+def calc_similar_count(expected_results, real_results):
+    expected_line = matrix_to_one_line(expected_results)
+    results_line = matrix_to_one_line(real_results)
+    intersection = np.intersect1d(expected_line, results_line)
+    return intersection.size
+
+
+def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: int = 1) -> np.matrix:
+    result = np.empty(training_data_matrix.shape, dtype=np.int16)
+    row_count, col_count = training_data_matrix.shape
+    for i in range(row_count):
+
+        expected_results = training_data_matrix[i, :]
+
+        for j in range(col_count):
+            results: np.matrix = results_matrix[i, j]
+            head_results = get_matrix_head(results, count)
+            result[i, j] = calc_similar_count(expected_results, head_results)
+    return np.asmatrix(result)

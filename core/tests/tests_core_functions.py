@@ -5,7 +5,11 @@ from find_similar import TokenText
 def eq(self, other):
     return self.text == other.text
 
+def lt(self, other):
+    return self.cos < other.cos
+
 TokenText.__eq__ = eq
+TokenText.__lt__ = lt
 
 from core.core_functions import (
     to_matrix,
@@ -16,6 +20,7 @@ from core.core_functions import (
     reshape_results,
     reshape_results_vector,
     get_matrix_head,
+    compare,
 )
 
 
@@ -224,3 +229,19 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
         old = to_matrix(self.two_two)
         head = get_matrix_head(old, 2)
         self.assertTrue(np.array_equal(old, head))
+
+    def test_compare(self):
+        training_data = to_matrix(self.two_two)
+        training_data = tokenize_vector(training_data)
+        texts = matrix_to_list(training_data)
+        similars = find_similar_vector(text_to_check=training_data, texts=texts, count=len(texts))
+        results = reshape_results_vector(results=similars, shape=training_data.shape)
+        report = compare(results, training_data, 1)
+        self.assertIsInstance(report, np.matrix)
+        self.assertEqual(report.shape, training_data.shape)
+        self.assertEqual(report.shape, results.shape)
+
+        print('training_data', training_data)
+        print('results', results)
+        print('REPORT', report)
+        self.assertEqual(report[0, 0], 2)
