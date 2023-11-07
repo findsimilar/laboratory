@@ -2,6 +2,11 @@ import numpy as np
 from django.test import SimpleTestCase
 from find_similar import TokenText
 
+def eq(self, other):
+    return self.text == other.text
+
+TokenText.__eq__ = eq
+
 from core.core_functions import (
     to_matrix,
     str_to_token_text,
@@ -115,94 +120,94 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
             self.assertEqual(new[0, 0][0].text, old[0, 0])
             self.assertEqual(new.shape, old.shape)
 
-    # def test_reshape_results(self):
-    #     params = [
-    #         # {
-    #         #     'data': self.one_one,
-    #         #     'expected': np.matrix(
-    #         #         ['one two']
-    #         #     ),
-    #         # },
-    #         {
-    #             'data': self.one_two,
-    #             'expected': np.matrix(
-    #                 [['one two', 'one']]
-    #             ),
-    #         },
-    #         {
-    #             'data': self.two_two,
-    #             'expected': np.matrix(
-    #                 [
-    #                     ['one 1984', '1984'],
-    #                     ['two 50', '50'],
-    #                 ]
-    #             ),
-    #         },
-    #     ]
-    #     for param in params:
-    #         old = to_matrix(param['data'])
-    #         texts = matrix_to_list(old)
-    #         new = find_similar_vector(text_to_check=old, texts=texts, count=len(texts))
-    #         # first
-    #         results = new[0, 0]
-    #         matrix = reshape_results(results, old.shape)
-    #         self.assertIsInstance(matrix, np.matrix)
-    #         self.assertEqual(matrix.shape, old.shape)
-    #         expected_matrix = tokenize_vector(param['expected'])
-    #         self.assertTrue(np.array_equal(matrix, expected_matrix))
-    #
-    #         # second
-    #         results = new[0, 1]
-    #         matrix = reshape_results(results, old.shape)
-    #         self.assertIsInstance(matrix, np.matrix)
-    #         self.assertEqual(matrix.shape, old.shape)
-    #         expected_matrix = tokenize_vector(param['expected'])
-    #         self.assertFalse(np.array_equal(matrix, expected_matrix))
-    #
-    # def test_reshape_results_vector(self):
-    #     params = [
-    #         # {
-    #         #     'data': self.one_one,
-    #         #     'expected': np.matrix(
-    #         #         ['one two']
-    #         #     ),
-    #         # },
-    #         {
-    #             'data': self.one_two,
-    #             'expected': np.matrix(
-    #                 [['one two', 'one']]
-    #             ),
-    #         },
-    #         {
-    #             'data': self.two_two,
-    #             'expected': np.matrix(
-    #                 [
-    #                     ['one 1984', '1984'],
-    #                     ['two 50', '50'],
-    #                 ]
-    #             ),
-    #         },
-    #     ]
-    #     for param in params:
-    #         old = to_matrix(param['data'])
-    #         texts = matrix_to_list(old)
-    #         new = find_similar_vector(text_to_check=old, texts=texts, count=len(texts))
-    #         new = reshape_results_vector(results=new, shape=new.shape)
-    #         # first
-    #         matrix = new[0, 0]
-    #         # matrix = reshape_results(results, old.shape)
-    #         self.assertIsInstance(matrix, np.matrix)
-    #         self.assertEqual(matrix.shape, old.shape)
-    #         expected_matrix = tokenize_vector(param['expected'])
-    #         self.assertTrue(np.array_equal(matrix, expected_matrix))
-    #
-    #         # second
-    #         matrix = new[0, 1]
-    #         # matrix = reshape_results(results, old.shape)
-    #         self.assertIsInstance(matrix, np.matrix)
-    #         self.assertEqual(matrix.shape, old.shape)
-    #         expected_matrix = tokenize_vector(param['expected'])
-    #         self.assertFalse(np.array_equal(matrix, expected_matrix))
+    def test_reshape_results(self):
+        params = [
+            # {
+            #     'data': self.one_one,
+            #     'expected': np.matrix(
+            #         ['one two']
+            #     ),
+            # },
+            {
+                'data': self.one_two,
+                'expected': np.matrix(
+                    [['one two', 'one']]
+                ),
+            },
+            {
+                'data': self.two_two,
+                'expected': np.matrix(
+                    [
+                        ['one 1984', '1984'],
+                        ['two 50', '50'],
+                    ]
+                ),
+            },
+        ]
+        for param in params:
+            old = to_matrix(param['data'])
+            texts = matrix_to_list(old)
+            new = find_similar_vector(text_to_check=old, texts=texts, count=len(texts))
+            # first
+            results = new[0, 0]
+            matrix = reshape_results(results, old.shape)
+            self.assertIsInstance(matrix, np.matrix)
+            self.assertEqual(matrix.shape, old.shape)
+            expected_matrix = tokenize_vector(param['expected'])
+            self.assertTrue(np.array_equal(matrix, expected_matrix))
+
+            # second
+            results = new[0, 1]
+            matrix = reshape_results(results, old.shape)
+            self.assertIsInstance(matrix, np.matrix)
+            self.assertEqual(matrix.shape, old.shape)
+            expected_matrix = tokenize_vector(param['expected'])
+            self.assertFalse(np.array_equal(matrix, expected_matrix))
+
+    def test_reshape_results_vector(self):
+        params = [
+            # {
+            #     'data': self.one_one,
+            #     'expected': np.matrix(
+            #         ['one two']
+            #     ),
+            # },
+            {
+                'data': self.one_two,
+                'expected': np.matrix(
+                    [['one two', 'one']]
+                ),
+            },
+            {
+                'data': self.two_two,
+                'expected': np.matrix(
+                    [
+                        ['one 1984', '1984'],
+                        ['two 50', '50'],
+                    ]
+                ),
+            },
+        ]
+        for param in params:
+            old = to_matrix(param['data'])
+            texts = matrix_to_list(old)
+            new = find_similar_vector(text_to_check=old, texts=texts, count=len(texts))
+            new = reshape_results_vector(results=new, shape=new.shape)
+            # first
+            matrix = new[0, 0]
+            # matrix = reshape_results(results, old.shape)
+            self.assertIsInstance(matrix, np.matrix)
+            self.assertEqual(matrix.shape, old.shape)
+            expected_matrix = tokenize_vector(param['expected'])
+            self.assertTrue(np.array_equal(matrix, expected_matrix))
+
+            # second
+            matrix = new[0, 1]
+            # matrix = reshape_results(results, old.shape)
+            self.assertIsInstance(matrix, np.matrix)
+            self.assertEqual(matrix.shape, old.shape)
+            expected_matrix = tokenize_vector(param['expected'])
+            self.assertFalse(np.array_equal(matrix, expected_matrix))
 
     def test_get_matrix_head(self):
         lines = 1
