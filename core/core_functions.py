@@ -20,6 +20,8 @@ def str_to_token_text(text: str) -> TokenText:
     :param text: some str text
     :return: TokenText with tokens
     """
+    # if text is None:
+    #     return
     return TokenText(text)
 
 
@@ -27,7 +29,9 @@ tokenize_vector = np.vectorize(str_to_token_text)
 
 
 def matrix_to_one_line(matrix: np.matrix) -> np.ndarray:
-    return np.array(matrix).reshape(-1, )
+    line = np.array(matrix).reshape(-1, )
+    # line = line[line != np.array(None)]
+    return line
 
 
 def matrix_to_list(matrix: np.matrix) -> list:
@@ -36,7 +40,14 @@ def matrix_to_list(matrix: np.matrix) -> list:
     :param matrix: matrix with data
     :return: list of all matrix values
     """
+
     return list(matrix_to_one_line(matrix))
+
+
+def find_similar_or_none(text_to_check, texts, language="english", count=5, dictionary=None, keywords=None):
+    if text_to_check is None:
+        return
+    return find_similar(text_to_check, texts, language, count, dictionary, keywords)
 
 
 find_similar_vector = np.vectorize(find_similar, otypes=[TokenText], excluded=[
@@ -79,7 +90,7 @@ def calc_percent(similar_count, column_count):
 
 
 def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: int = 1) -> np.matrix:
-    result = np.empty(training_data_matrix.shape, dtype=np.int16)
+    result = np.empty(training_data_matrix.shape, dtype=np.float16)
     row_count, col_count = training_data_matrix.shape
     for i in range(row_count):
 
@@ -91,3 +102,7 @@ def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: i
             percent = calc_percent(similar_count, col_count)
             result[i, j] = percent
     return np.asmatrix(result)
+
+
+def calculate_total_rating(percent_results: np.matrix):
+    return percent_results.mean()

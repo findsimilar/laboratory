@@ -5,6 +5,13 @@ from django.test import SimpleTestCase
 
 class NumpyTestCase(SimpleTestCase):
 
+    # def test_null_values(self):
+    #     arr = np.array([None, 1.0])
+    #     self.assertIsInstance(arr, np.ndarray)
+    #     elem = arr[0]
+    #     print('ELEM', elem)
+    #     self.assertIsInstance(elem, int)
+
     def test_matrix_updates(self):
 
         # data = [
@@ -74,15 +81,15 @@ class NumpyTestCase(SimpleTestCase):
         similar_shaped_matrix = reshape_list_vectorize(similars_matrix)
 
         #print('STR MATRIX')
-        print(data_matrix)
+        #print(data_matrix)
         #print('TokenText MATRIX')
-        print(token_text_matrix)
+        #print(token_text_matrix)
         #print('Similars MATRIX')
-        print(similars_matrix)
+        #print(similars_matrix)
         #print('cos MATRIX')
-        print(cos_matrix)
+        #print(cos_matrix)
         #print('reshaped MATRIX')
-        print(similar_shaped_matrix)
+        #print(similar_shaped_matrix)
 
         first = similar_shaped_matrix[0, 0]
         self.assertIsInstance(first, np.matrix)
@@ -95,15 +102,15 @@ class NumpyTestCase(SimpleTestCase):
         first_texts = token_to_text(first)
 
         #print('BEGIN')
-        print(data_matrix)
+        #print(data_matrix)
         #print('FIRST')
-        print(first_texts)
+        #print(first_texts)
 
         second = similar_shaped_matrix[1, 0]
         second_texts = token_to_text(second)
 
         #print('SECOND')
-        print(second_texts)
+        #print(second_texts)
 
         # self.assertTrue(np.array_equal(first_texts, data_matrix))
 

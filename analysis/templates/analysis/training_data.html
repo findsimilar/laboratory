@@ -2,7 +2,7 @@
 {% block main %}
     <h2>{{object.name}}</h2>
 <p></p>
-<a class="btn btn-primary" href="#">Total rating</a>
+<a class="btn btn-primary" href="{% url 'analysis:total_rating_form' pk=object.pk %}">Total rating</a>
 <a class="btn btn-info" href="#">One column rating</a>
 <a class="btn btn-info" href="{% url 'analysis:find_similar' pk=object.pk %}">Find similar</a>
 <a class="btn btn-second" href="{% url 'analysis:tokenize' %}">Tokenize</a>

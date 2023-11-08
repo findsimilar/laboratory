@@ -22,4 +22,5 @@ urlpatterns = [
     path('clear-training-data/', views.clear_training_data, name="clear_training_data"),
     path('clear-text-token/', views.clear_text_token, name="clear_text_token"),
     path('tokenize/', views.TokenizeView.as_view(), name="tokenize"),
+    path('total-rating-form/<int:pk>/', views.TotalRatingFormView.as_view(), name="total_rating_form"),
 ]
