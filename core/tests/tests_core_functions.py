@@ -5,11 +5,11 @@ from find_similar import TokenText
 def eq(self, other):
     return self.text == other.text
 
-def lt(self, other):
-    return self.cos < other.cos
+# def lt(self, other):
+#     return self.cos < other.cos
 
 TokenText.__eq__ = eq
-TokenText.__lt__ = lt
+# TokenText.__lt__ = lt
 
 from core.core_functions import (
     to_matrix,
@@ -33,6 +33,12 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
         self.two_two = [
             ['one 1984', '1984'],
             ['two 50', '50'],
+        ]
+
+        self.not_exact = [
+            ['1', '1 1'],
+            ['2', '3'],
+            ['4', '2 2'],
         ]
 
     def test_to_matrix(self):
@@ -236,12 +242,30 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
         texts = matrix_to_list(training_data)
         similars = find_similar_vector(text_to_check=training_data, texts=texts, count=len(texts))
         results = reshape_results_vector(results=similars, shape=training_data.shape)
+
         report = compare(results, training_data, 1)
+
         self.assertIsInstance(report, np.matrix)
         self.assertEqual(report.shape, training_data.shape)
         self.assertEqual(report.shape, results.shape)
 
-        print('training_data', training_data)
-        print('results', results)
-        print('REPORT', report)
-        self.assertEqual(report[0, 0], 2)
+        self.assertEqual(report[(0, 0)], 100)
+
+        # Bad finding
+        training_data = to_matrix(self.not_exact)
+        training_data = tokenize_vector(training_data)
+        texts = matrix_to_list(training_data)
+        similars = find_similar_vector(text_to_check=training_data, texts=texts, count=len(texts))
+        results = reshape_results_vector(results=similars, shape=training_data.shape)
+
+        report = compare(results, training_data, 1)
+
+        self.assertEqual(report[(1, 1)], 0)
+
+        # Here we can check several lines
+        report = compare(results, training_data, 2)
+        self.assertEqual(report[(1, 1)], 100)
+        self.assertEqual(report[(2, 1)], 0)
+
+        report = compare(results, training_data, 3)
+        self.assertEqual(report[(2, 1)], 100)

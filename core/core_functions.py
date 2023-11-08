@@ -67,8 +67,15 @@ def get_matrix_head(matrix: np.matrix, count: int = 1):
 def calc_similar_count(expected_results, real_results):
     expected_line = matrix_to_one_line(expected_results)
     results_line = matrix_to_one_line(real_results)
-    intersection = np.intersect1d(expected_line, results_line)
-    return intersection.size
+    intersection = np.in1d(expected_line, results_line)
+    return np.count_nonzero(intersection)  # intersection == True
+
+
+def calc_percent(similar_count, column_count):
+    # cc - 100
+    # sc - x
+    # x = sc * 100 / cc
+    return (similar_count - 1) * 100 / (column_count - 1)
 
 
 def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: int = 1) -> np.matrix:
@@ -77,9 +84,10 @@ def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: i
     for i in range(row_count):
 
         expected_results = training_data_matrix[i, :]
-
         for j in range(col_count):
             results: np.matrix = results_matrix[i, j]
             head_results = get_matrix_head(results, count)
-            result[i, j] = calc_similar_count(expected_results, head_results)
+            similar_count = calc_similar_count(expected_results, head_results)
+            percent = calc_percent(similar_count, col_count)
+            result[i, j] = percent
     return np.asmatrix(result)
