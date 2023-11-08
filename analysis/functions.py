@@ -86,6 +86,10 @@ def example_frequency_analysis(example):
 @Printer(title=lambda name, filepath, sheet_name=0, **kwargs: f'Loading data from "{filepath}"...')
 def load_training_data(name, filepath, sheet_name=0):
     dataframe = load_from_excel(filepath, sheet_name)
+
+    # remove Null values
+    dataframe = dataframe.dropna()
+
     # TrainingData
     training_data = TrainingData.objects.create(name=name, data=dataframe.to_json())
     return training_data

@@ -362,9 +362,9 @@ class TotalRatingFormView(FormView):
         similars = find_similar_vector(text_to_check=training_data, texts=texts, count=len(texts))
         results = reshape_results_vector(results=similars, shape=training_data.shape)
 
-        report = compare(results, training_data, 1)
+        report = compare(results, training_data, 2)
 
-        print(report)
+        # print(report)
 
         total_rating = calculate_total_rating(report)
         print('TOTAL:', total_rating)

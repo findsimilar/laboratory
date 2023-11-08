@@ -2,11 +2,31 @@
 {% block main %}
     <h2>{{object.name}}</h2>
 <p></p>
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Columns count</th>
+        <th>Rows count</th>
+    </tr>
+    <tr>
+        <td>
+            <a href="{% url 'analysis:training_data' pk=object.pk %}">{{object.name}}</a>
+        </td>
+        <td>
+            {{object.columns_count}}
+        </td>
+        <td>
+            {{object.rows_count}}
+        </td>
+    </tr>
+
+</table>
 <a class="btn btn-primary" href="{% url 'analysis:total_rating_form' pk=object.pk %}">Total rating</a>
 <a class="btn btn-info" href="#">One column rating</a>
 <a class="btn btn-info" href="{% url 'analysis:find_similar' pk=object.pk %}">Find similar</a>
 <a class="btn btn-second" href="{% url 'analysis:tokenize' %}">Tokenize</a>
 <a class="btn btn-danger" href="{% url 'analysis:delete_training_data' pk=object.pk %}">Delete</a>
+
 {% endblock %}
 {% block results %}
     {% with object.display_dataframe as data %}
