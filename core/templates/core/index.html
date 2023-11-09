@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 {% block main %}
-<h1>FindSimilar Laboratory</h1>
-
 <div class="container">
     <div class="row">
         <div class="card col-md-12">
@@ -41,6 +39,24 @@
         <a class="link" href="{% url 'analysis:compare_two' %}">
           <span data-feather="file"></span>
           Compare two texts
+        </a>
+      </li>
+      <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:text_token_list' %}">
+          <span data-feather="file"></span>
+          TextToken list
+        </a>
+      </li>
+         <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:tokenize' %}">
+          <span data-feather="file"></span>
+          Tokenize
+        </a>
+      </li>
+          <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:find_similar' %}">
+          <span data-feather="file"></span>
+          Find Similar
         </a>
       </li>
     </ul>
@@ -92,5 +108,35 @@
 
 {% endblock %}
 {% block results %}
-    ...
+    <div class="container">
+        <div class="row">
+            <div class="card col-md-6">
+  <div class="card-body">
+    <h4 class="card-title">Proximity results</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="{% url 'examples:example_list' %}">
+                  <span data-feather="file"></span>
+                  Example list
+                </a>
+        </li>
+    </ul>
+  </div>
+</div>
+
+<div class="card col-md-6">
+  <div class="card-body">
+    <h4 class="card-title">Text results</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:result_list' %}">
+                  <span data-feather="file"></span>
+                  Result List
+                </a>
+        </li>
+    </ul>
+  </div>
+</div>
+        </div>
+    </div>
 {% endblock %}

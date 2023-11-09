@@ -1,7 +1,7 @@
 import pandas as pd
 from django.test import TestCase, SimpleTestCase
-from analysis.models import TrainingData, to_list
-from analysis.tests.data import get_2x2_expected_data
+from core.models import TrainingData, to_list
+from core.tests.data import get_2x2_expected_data
 
 
 class TrainingDataTestCase(TestCase):

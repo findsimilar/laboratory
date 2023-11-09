@@ -3,17 +3,16 @@ Tests for Analysis functions
 """
 from django.test import SimpleTestCase, TestCase
 
+from utils.decorators import Printer
+
 from analysis.functions import (
-    Printer,
     analyze_one_item,
     analyze_two_items,
-    example_frequency_analysis,
-    total_rating,
-    load_training_data,
-    find_similar_dataframe,
+    # example_frequency_analysis,
+    # load_training_data,
 )
-from analysis.tests.data import get_2x2_filepath, get_2x2_expected_data, get_2x2_training_data, Token
-from analysis.models import TrainingData
+# from analysis.tests.data import get_2x2_filepath, get_2x2_expected_data, get_2x2_training_data, Token
+# from analysis.models import TrainingData
 
 
 class TestingPrinter:
@@ -49,87 +48,6 @@ class FunctionsSimpleTestCase(SimpleTestCase):
 
         self.testing_printer = TestingPrinter()
 
-    def test_printer_function_without_printer(self):
-        """
-        Test printer when function hasn't got params
-        """
-        @Printer(printer=self.testing_printer)
-        def some_func():
-            """
-            Do something usefull
-            """
-
-        result = some_func()
-        expected_prints = [
-            'Start',
-            'Done:',
-            f'{result}',
-            'End'
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
-
-    def test_printer_function_with_printer_kwargs(self):
-        """
-        Test printer when send printer dirrectly in function
-        """
-        @Printer()
-        def some_func(printer=print):  # pylint: disable=unused-argument
-            """
-            Do something usefull
-            """
-
-        result = some_func(printer=self.testing_printer)
-        expected_prints = [
-            'Start',
-            'Done:',
-            f'{result}',
-            'End'
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
-
-    def test_printer_simple_title(self):
-        """
-        Test printer then we sent simple str title
-        """
-        simple_title = 'Simple title'
-
-        @Printer(title=lambda **kwargs: simple_title, printer=self.testing_printer)
-        def some_func():
-            """
-            Do something usefull
-            """
-
-        result = some_func()
-        expected_prints = [
-            'Start',
-            simple_title,
-            'Done:',
-            f'{result}',
-            'End'
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
-
-    def test_printer_param_title(self):
-        """
-        Test wen we sent title and function has a param
-        """
-        @Printer(title=lambda param, **kwargs: f'Title {param}')
-        def some_func(param, printer=print):  # pylint: disable=unused-argument
-            """
-            Do something usefull
-            """
-
-
-        result = some_func('A', printer=self.testing_printer)
-        expected_prints = [
-            'Start',
-            'Title A',
-            'Done:',
-            f'{result}',
-            'End'
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
-
     def test_analyze_one_item(self):
         """
         Test for analyze one item
@@ -140,7 +58,6 @@ class FunctionsSimpleTestCase(SimpleTestCase):
         )
         expected_tokens = {self.one, self.two}
         self.assertEqual(tokens, expected_tokens)
-
 
     def test_analyze_two_items(self):
         """
@@ -184,113 +101,6 @@ class FunctionsSimpleTestCase(SimpleTestCase):
             'End',
             'Done:',
             f'{different_cos}',
-            'End',
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
-
-    def test_example_frequency_analysis(self):
-        """
-        Test for example_frequency_analysis
-        """
-        example_name = 'mock'
-        expected_result = (('mock', 2),
-            ('example', 2),
-            ('for', 2),
-            ('tests', 2),
-            ('this', 1),
-            ('is', 1))
-        self.assertEqual(example_frequency_analysis(  # pylint: disable=unexpected-keyword-arg
-            example_name,
-            printer=self.testing_printer
-        ), expected_result)
-
-    def test_use_match_list(self):
-        match_list = [
-            [
-                'one', 'uno', 'one or uno',
-            ],
-            [
-                'two', 'dos', 'two or dos'
-            ]
-        ]
-
-        def find_similar_mock(  # pylint: disable=too-many-arguments
-                text_to_check,
-                texts,
-                language="russian",
-                count=5,
-                dictionary=None,
-                remove_stopwords=True,
-                keywords=None,
-        ):
-            return [
-                {'name': 'one', 'cos': 1.0},
-                {'name': 'two', 'cos': 1.0},
-                {'name': 'uno', 'cos': 0.9},
-                {'name': 'one or uno', 'cos': 0.5},
-                {'name': 'dos', 'cos': 0.0},
-                {'name': 'two or dos', 'cos': 0.0},
-            ]
-
-        to_search = ['one', 'two']
-        results = total_rating(to_search, match_list, find_similar_mock)
-        excepted_results = {
-            'one': '2/3',
-            'two': '1/3',
-        }
-        self.assertEqual(results, excepted_results)
-
-
-class FunctionsTestCase(TestCase):
-
-    def setUp(self):
-        self.testing_printer = TestingPrinter()
-
-    def test_load_testing_data(self):
-        filepath = get_2x2_filepath()
-        expected = get_2x2_expected_data()
-        result = load_training_data('first', filepath, sheet_name=0, printer=self.testing_printer)
-        self.assertTrue(isinstance(result, TrainingData))
-        self.assertTrue(expected.equals(result.get_dataframe))
-
-        # prints
-        expected_prints = [
-            'Start',
-            f'Loading data from "{filepath}"...',
-            'Done:',
-            str(result),
-            'End',
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
-
-    def test_find_similar_dataframe(self):
-        sorted_result = [
-                Token(text='2', cos=1.0),
-                Token(text='1', cos=0.5),
-                Token(text='3', cos=0.5),
-                Token(text='4', cos=0.0),
-            ]
-
-        def find_similar_2x2(text, texts):
-            return sorted_result
-
-        training_data = get_2x2_training_data()
-        text = '2'
-        dataframe = training_data.get_dataframe
-        similars = find_similar_dataframe(
-            text,
-            training_data.get_dataframe,
-            find_similar_2x2,
-            printer=self.testing_printer
-        )
-        self.assertEqual(len(similars), 4)
-
-        # prints
-        expected_prints = [
-            'Start',
-            f'Find similar for "{text}" in "{dataframe}"...',
-            'Done:',
-            str(similars),
             'End',
         ]
         self.assertEqual(self.testing_printer.results, expected_prints)

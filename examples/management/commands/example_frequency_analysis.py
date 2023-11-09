@@ -2,7 +2,7 @@
 Command to analyze one example to frequency
 """
 from django.core.management.base import BaseCommand
-from analysis.functions import example_frequency_analysis
+from examples.functions import example_frequency_analysis
 
 
 class Command(BaseCommand):

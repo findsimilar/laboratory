@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block main %}
-    <form method="post">
+    <h2>Tokenize</h2>
+    Tokenize all TextTokens in the database
+<hr>
+<p></p>
+    <form method="post" >
         {% csrf_token %}
         {{form.as_p}}
         <button type="submit" class="btn btn-primary">Tokenize</button>

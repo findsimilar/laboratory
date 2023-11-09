@@ -15,9 +15,7 @@ from dry_tests import (
 )
 from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
 from mixer.backend.django import mixer
-from analysis.forms import OneTextForm, TwoTextForm, LoadTrainingDataForm
-from analysis.models import TrainingData
-from analysis.tests.data import get_2x2_filepath, get_2x2_training_data
+from analysis.forms import OneTextForm, TwoTextForm
 from analysis.urls import app_name
 
 
@@ -186,10 +184,181 @@ class TestCompareTwo(SimpleTestCase):
         self.assertTrueResponse(current_response, true_response)
 
 
-class LoadTrainingDataViewTestCase(TestCase):
+# class LoadTrainingDataViewTestCase(TestCase):
+#
+#     def setUp(self):
+#         self.url = reverse('analysis:load_training_data')
+#
+#     def test_get(self):
+#         request = Request(
+#             url=self.url,
+#         )
+#         true_response = TrueResponse(
+#             status_code=200,
+#             context=Context(
+#                 keys=['form'],
+#                 types={
+#                     'form': LoadTrainingDataForm
+#                 },
+#             ),
+#             content_values=[
+#                 ContentValue(
+#                     value='<form method="post" enctype="multipart/form-data">',
+#                     count=1,
+#                 ),
+#                 ContentValue(
+#                     value='</form>',
+#                     count=1,
+#                 ),
+#             ],
+#         )
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#
+#     def test_post(self):
+#         filepath = get_2x2_filepath()
+#         excel_file = SimpleUploadedFile(filepath, open(filepath, 'rb').read())
+#         name = 'first'
+#         data = {
+#             'name': name,
+#             'excel_file': excel_file,
+#             'sheet_name': 0,
+#         }
+#         request = Request(
+#             url=self.url,
+#             method=POST,
+#             data=data,
+#         )
+#         true_response = TrueResponse(
+#             status_code=302,
+#         )
+#
+#         self.assertFalse(TrainingData.objects.filter(name=name).exists())
+#
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#         # true model has been created
+#
+#         self.assertTrue(TrainingData.objects.filter(name=name).exists())
+#
+#         training_data = TrainingData.objects.get(name=name)
+#         redirect_url = reverse('analysis:training_data', kwargs={'pk': training_data.pk})
+#         true_response = TrueResponse(
+#             redirect_url=redirect_url,
+#         )
+#         self.assertTrueResponse(current_response, true_response)
+#
+#
+# class TrainingDataDetailViewTestCase(TestCase):
+#
+#     def setUp(self):
+#         self.training_data = get_2x2_training_data()
+#         self.url = reverse('analysis:training_data', kwargs={'pk': self.training_data.pk})
+#
+#     def test_get(self):
+#         request = Request(
+#             url=self.url,
+#         )
+#
+#         content_values = [
+#             self.training_data.name,
+#         ]
+#
+#         dataframe = self.training_data.get_dataframe
+#
+#         # add headers
+#         columns = dataframe.columns
+#         for column in columns:
+#             content_values.append(column)
+#             data_list = dataframe[column].values.tolist()
+#             content_values += data_list
+#
+#         true_response = TrueResponse(
+#             status_code=200,
+#             context=Context(
+#                 keys=['object'],
+#                 items={
+#                     'object': self.training_data
+#                 }
+#             ),
+#             content_values=content_values
+#         )
+#
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#
+#
+# class TrainingDataListViewTestCase(TestCase):
+#
+#     def setUp(self):
+#         self.url = reverse('analysis:training_data_list')
+#         self.training_data_list = [get_2x2_training_data('first'), get_2x2_training_data('second')]
+#
+#     def test_get(self):
+#         request = Request(
+#             url=self.url
+#         )
+#         true_response = TrueResponse(
+#             status_code=200,
+#             context=Context(
+#                 keys=['object_list'],
+#             ),
+#             content_values=[item.name for item in self.training_data_list]
+#         )
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#         self.assertQuerySetEqual(current_response.context['object_list'], self.training_data_list, ordered=False)
+#
+#
+# class TrainingDataDeleteView(TestCase):
+#
+#     def setUp(self):
+#         self.training_data = get_2x2_training_data()
+#         self.url = reverse('analysis:delete_training_data', kwargs={'pk': self.training_data.pk})
+#
+#     def test_get(self):
+#         request = Request(
+#             url=self.url,
+#         )
+#
+#         content_values = [
+#             self.training_data.name,
+#         ]
+#
+#         true_response = TrueResponse(
+#             status_code=200,
+#             context=Context(
+#                 keys=['object'],
+#                 items={
+#                     'object': self.training_data
+#                 }
+#             ),
+#             content_values=content_values
+#         )
+#
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#
+#     def test_post(self):
+#         request = Request(
+#             url=self.url,
+#             method=POST,
+#         )
+#
+#         true_response = TrueResponse(
+#             status_code=302,
+#             redirect_url=reverse('analysis:training_data_list')
+#         )
+#
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+
+
+class FindSimilarViewTestCase(TestCase):
 
     def setUp(self):
-        self.url = reverse('analysis:load_training_data')
+        # self.training_data = get_2x2_training_data()
+        self.url = reverse('analysis:find_similar')
 
     def test_get(self):
         request = Request(
@@ -199,180 +368,9 @@ class LoadTrainingDataViewTestCase(TestCase):
             status_code=200,
             context=Context(
                 keys=['form'],
-                types={
-                    'form': LoadTrainingDataForm
-                },
-            ),
-            content_values=[
-                ContentValue(
-                    value='<form method="post" enctype="multipart/form-data">',
-                    count=1,
-                ),
-                ContentValue(
-                    value='</form>',
-                    count=1,
-                ),
-            ],
-        )
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-
-    def test_post(self):
-        filepath = get_2x2_filepath()
-        excel_file = SimpleUploadedFile(filepath, open(filepath, 'rb').read())
-        name = 'first'
-        data = {
-            'name': name,
-            'excel_file': excel_file,
-            'sheet_name': 0,
-        }
-        request = Request(
-            url=self.url,
-            method=POST,
-            data=data,
-        )
-        true_response = TrueResponse(
-            status_code=302,
-        )
-
-        self.assertFalse(TrainingData.objects.filter(name=name).exists())
-
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-        # true model has been created
-
-        self.assertTrue(TrainingData.objects.filter(name=name).exists())
-
-        training_data = TrainingData.objects.get(name=name)
-        redirect_url = reverse('analysis:training_data', kwargs={'pk': training_data.pk})
-        true_response = TrueResponse(
-            redirect_url=redirect_url,
-        )
-        self.assertTrueResponse(current_response, true_response)
-
-
-class TrainingDataDetailViewTestCase(TestCase):
-
-    def setUp(self):
-        self.training_data = get_2x2_training_data()
-        self.url = reverse('analysis:training_data', kwargs={'pk': self.training_data.pk})
-
-    def test_get(self):
-        request = Request(
-            url=self.url,
-        )
-
-        content_values = [
-            self.training_data.name,
-        ]
-
-        dataframe = self.training_data.get_dataframe
-
-        # add headers
-        columns = dataframe.columns
-        for column in columns:
-            content_values.append(column)
-            data_list = dataframe[column].values.tolist()
-            content_values += data_list
-
-        true_response = TrueResponse(
-            status_code=200,
-            context=Context(
-                keys=['object'],
-                items={
-                    'object': self.training_data
-                }
-            ),
-            content_values=content_values
-        )
-
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-
-
-class TrainingDataListViewTestCase(TestCase):
-
-    def setUp(self):
-        self.url = reverse('analysis:training_data_list')
-        self.training_data_list = [get_2x2_training_data('first'), get_2x2_training_data('second')]
-
-    def test_get(self):
-        request = Request(
-            url=self.url
-        )
-        true_response = TrueResponse(
-            status_code=200,
-            context=Context(
-                keys=['object_list'],
-            ),
-            content_values=[item.name for item in self.training_data_list]
-        )
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-        self.assertQuerySetEqual(current_response.context['object_list'], self.training_data_list, ordered=False)
-
-
-class TrainingDataDeleteView(TestCase):
-
-    def setUp(self):
-        self.training_data = get_2x2_training_data()
-        self.url = reverse('analysis:delete_training_data', kwargs={'pk': self.training_data.pk})
-
-    def test_get(self):
-        request = Request(
-            url=self.url,
-        )
-
-        content_values = [
-            self.training_data.name,
-        ]
-
-        true_response = TrueResponse(
-            status_code=200,
-            context=Context(
-                keys=['object'],
-                items={
-                    'object': self.training_data
-                }
-            ),
-            content_values=content_values
-        )
-
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-
-    def test_post(self):
-        request = Request(
-            url=self.url,
-            method=POST,
-        )
-
-        true_response = TrueResponse(
-            status_code=302,
-            redirect_url=reverse('analysis:training_data_list')
-        )
-
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-
-
-class FindSimilarViewTestCase(TestCase):
-
-    def setUp(self):
-        self.training_data = get_2x2_training_data()
-        self.url = reverse('analysis:find_similar', kwargs={'pk': self.training_data.pk})
-
-    def test_get(self):
-        request = Request(
-            url=self.url,
-        )
-        true_response = TrueResponse(
-            status_code=200,
-            context=Context(
-                keys=['object', 'form'],
-                items={
-                    'object': self.training_data,
-                },
+                # items={
+                #     'object': self.training_data,
+                # },
                 types={
                     'form': FindSimilarForm
                 }
@@ -495,44 +493,44 @@ class TestTextTokenDetailView(TestCase):
         self.assertTrueResponse(current_response, true_response)
 
 
-class ClearTrainingData(TestCase):
-
-    def setUp(self):
-        self.url = reverse('analysis:clear_training_data')
-
-    def test_get(self):
-        request = Request(
-            url=self.url,
-        )
-
-        true_response = TrueResponse(
-            status_code=200,
-            content_values=FORM_CONTENT_VALUES
-        )
-
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-
-    def test_post(self):
-        request = Request(
-            url=self.url,
-            method=POST,
-        )
-
-        true_response = TrueResponse(
-            status_code=302,
-            redirect_url='/analysis/training-data-list/'
-        )
-
-        # db state before
-        mixer.cycle(2).blend(TrainingData, data={})
-        self.assertTrue(TrainingData.objects.all().exists())
-
-        current_response = request.get_response(self.client)
-        self.assertTrueResponse(current_response, true_response)
-
-        # db state after
-        self.assertFalse(TrainingData.objects.all().exists())
+# class ClearTrainingData(TestCase):
+#
+#     def setUp(self):
+#         self.url = reverse('analysis:clear_training_data')
+#
+#     def test_get(self):
+#         request = Request(
+#             url=self.url,
+#         )
+#
+#         true_response = TrueResponse(
+#             status_code=200,
+#             content_values=FORM_CONTENT_VALUES
+#         )
+#
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#
+#     def test_post(self):
+#         request = Request(
+#             url=self.url,
+#             method=POST,
+#         )
+#
+#         true_response = TrueResponse(
+#             status_code=302,
+#             redirect_url='/analysis/training-data-list/'
+#         )
+#
+#         # db state before
+#         mixer.cycle(2).blend(TrainingData, data={})
+#         self.assertTrue(TrainingData.objects.all().exists())
+#
+#         current_response = request.get_response(self.client)
+#         self.assertTrueResponse(current_response, true_response)
+#
+#         # db state after
+#         self.assertFalse(TrainingData.objects.all().exists())
 
 
 class ClearTextToken(TestCase):
@@ -592,7 +590,7 @@ class TokenizeViewTestCase(TestCase):
                     'form': FindSimilarParamsForm,
                 }
             ),
-            content_values=FORM_CONTENT_VALUES
+            content_values=['form']
         )
 
         current_response = request.get_response(self.client)
@@ -613,17 +611,19 @@ class TokenizeViewTestCase(TestCase):
 
         true_response = TrueResponse(
             status_code=302,
-            redirect_url='/analysis/training-data-list/',
+            redirect_url='/analysis/text-token-list/',
         )
 
-        self.training_data = get_2x2_training_data()
+        # self.training_data = get_2x2_training_data()
         # db before
-        self.assertFalse(TextToken.objects.all().exists())
+        # self.assertFalse(TextToken.objects.all().exists())
+        mixer.blend(TextToken)
+
         self.assertFalse(Token.objects.all().exists())
 
         current_response = request.get_response(self.client)
         self.assertTrueResponse(current_response, true_response)
 
         # db after
-        self.assertTrue(TextToken.objects.all().exists())
+        # self.assertTrue(TextToken.objects.all().exists())
         self.assertTrue(Token.objects.all().exists())

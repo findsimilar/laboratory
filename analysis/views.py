@@ -19,17 +19,14 @@ from find_similar.tokenize import tokenize
 from analysis.functions import (
     analyze_one_item,
     analyze_two_items,
-    example_frequency_analysis,
-    load_training_data,
 )
 from core.core_functions import tokenize_vector, matrix_to_list, find_similar_vector, reshape_results_vector, compare, \
     calculate_total_rating
 from .forms import (
     OneTextForm,
     TwoTextForm,
-    LoadTrainingDataForm,
 )
-from .models import TrainingData, to_list
+# from .models import TrainingData, to_list
 
 
 class TokenizeOneView(FormView):
@@ -95,61 +92,51 @@ class CompareTwoView(FormView):
         return context
 
 
-class LoadTrainingDataView(FormView):
-    form_class = LoadTrainingDataForm
-    template_name = 'analysis/load_data.html'
-
-    def handle_uploaded_file(self, f):
-        uploaded_path = os.path.join(settings.BASE_DIR, 'uploads', 'loaddata.xlsx')
-        with open(uploaded_path, 'wb+') as destination:
-            for chunk in f.chunks():
-                destination.write(chunk)
-        return uploaded_path
-
-    def form_valid(self, form):
-        data = form.cleaned_data
-        excel_file = form.cleaned_data['excel_file']
-        uploaded_path = self.handle_uploaded_file(excel_file)
-        name = data['name']
-        sheet_name = data.get('sheet_name', 0)
-        self.training_data = load_training_data(name=name, filepath=uploaded_path, sheet_name=sheet_name)
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse('analysis:training_data', kwargs={'pk': self.training_data.pk})
-
-
-class TrainingDataDetailView(DetailView):
-    model = TrainingData
-    template_name = 'analysis/training_data.html'
+# class LoadTrainingDataView(FormView):
+#     form_class = LoadTrainingDataForm
+#     template_name = 'analysis/load_data.html'
+#
+#     def handle_uploaded_file(self, f):
+#         uploaded_path = os.path.join(settings.BASE_DIR, 'uploads', 'loaddata.xlsx')
+#         with open(uploaded_path, 'wb+') as destination:
+#             for chunk in f.chunks():
+#                 destination.write(chunk)
+#         return uploaded_path
+#
+#     def form_valid(self, form):
+#         data = form.cleaned_data
+#         excel_file = form.cleaned_data['excel_file']
+#         uploaded_path = self.handle_uploaded_file(excel_file)
+#         name = data['name']
+#         sheet_name = data.get('sheet_name', 0)
+#         self.training_data = load_training_data(name=name, filepath=uploaded_path, sheet_name=sheet_name)
+#         return super().form_valid(form)
+#
+#     def get_success_url(self):
+#         return reverse('analysis:training_data', kwargs={'pk': self.training_data.pk})
 
 
-class TrainingDataListView(ListView):
-    model = TrainingData
-    template_name = 'analysis/training_data_list.html'
-    ordering = '-update'
+# class TrainingDataDetailView(DetailView):
+#     model = TrainingData
+#     template_name = 'analysis/training_data.html'
+#
+#
+# class TrainingDataListView(ListView):
+#     model = TrainingData
+#     template_name = 'analysis/training_data_list.html'
+#     ordering = '-update'
 
 
-class TrainingDataDeleteView(DeleteView):
-    model = TrainingData
-    template_name = 'analysis/training_data_delete_confirm.html'
-    success_url = reverse_lazy('analysis:training_data_list')
+# class TrainingDataDeleteView(DeleteView):
+#     model = TrainingData
+#     template_name = 'analysis/training_data_delete_confirm.html'
+#     success_url = reverse_lazy('analysis:training_data_list')
 
 
 class FindSimilarFormView(FormView):
     form_class = FindSimilarForm
     template_name = 'analysis/find_similar.html'
     success_url = reverse_lazy('analysis:result_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        pk = kwargs['pk']
-        self.object = get_object_or_404(TrainingData, pk=pk)
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object'] = self.object
-        return context
 
     def form_valid(self, form):
         # Get cleaned data from FindSimilarForm
@@ -170,26 +157,26 @@ class FindSimilarFormView(FormView):
 
         # save all data from dataset to TextToken
         # self.object
-        data_list = to_list(self.object.get_dataframe)
-
-        new_token_texts = []
-        for item in data_list:
-            item_text_token = TextToken(
-                text=item,
-                language=language,
-                remove_stopwords=remove_stopwords
-            )
-            new_token_texts.append(item_text_token)
-
-        TextToken.objects.bulk_create(new_token_texts, ignore_conflicts=True)
+        # data_list = to_list(self.object.get_dataframe)
+        #
+        # new_token_texts = []
+        # for item in data_list:
+        #     item_text_token = TextToken(
+        #         text=item,
+        #         language=language,
+        #         remove_stopwords=remove_stopwords
+        #     )
+        #     new_token_texts.append(item_text_token)
+        #
+        # TextToken.objects.bulk_create(new_token_texts, ignore_conflicts=True)
 
         # Adapt TextToken
         adapters = [TokenTextAdapter(item) for item in TextToken.objects.all()]
         # use find_similar
-        result = find_similar(adapter, adapters, count=len(data_list))
+        result = find_similar(adapter, adapters, count=len(adapters))
 
         # save results to the database
-        # CheckResult.save_result(text_token, result)
+        CheckResult.save_result(text_token, result)
         return super().form_valid(form)
 
 
@@ -219,15 +206,15 @@ class TextTokenDetailView(DetailView):
     template_name = 'analysis/text_token.html'
 
 
-def clear_training_data(request):
-    if request.method == 'POST':
-        TrainingData.objects.all().delete()
-        CheckResultItem.objects.all().delete()
-        Token.objects.all().delete()
-        CheckResult.objects.all().delete()
-        TextToken.objects.all().delete()
-        return HttpResponseRedirect(reverse('analysis:training_data_list'))
-    return render(request, 'analysis/clear_data.html', context={'model_name': 'Training Data'})
+# def clear_training_data(request):
+#     if request.method == 'POST':
+#         TrainingData.objects.all().delete()
+#         # CheckResultItem.objects.all().delete()
+#         # Token.objects.all().delete()
+#         # CheckResult.objects.all().delete()
+#         # TextToken.objects.all().delete()
+#         return HttpResponseRedirect(reverse('analysis:training_data_list'))
+#     return render(request, 'analysis/clear_data.html', context={'model_name': 'Training Data'})
 
 
 def clear_text_token(request):
@@ -237,34 +224,32 @@ def clear_text_token(request):
         CheckResult.objects.all().delete()
         TextToken.objects.all().delete()
         return HttpResponseRedirect(reverse('analysis:text_token_list'))
-    return render(request, 'analysis/clear_data.html', context={'model_name': 'Text Tokens'})
+    return render(request, 'core/clear_data.html', context={'model_name': 'Text Tokens'})
 
 
 class TokenizeView(FormView):
     form_class = FindSimilarParamsForm
     template_name = 'analysis/tokenize.html'
-    success_url = reverse_lazy('analysis:training_data_list')
+    success_url = reverse_lazy('analysis:text_token_list')
 
     def form_valid(self, form):
-        # profiler = cProfile.Profile()
-        # profiler.enable()
         cleaned_data = form.cleaned_data
         language = cleaned_data['language']
         remove_stopwords = cleaned_data['remove_stopwords']
         # Make all training data (In a future we shout get just one)
-        training_data_list = TrainingData.objects.all()
-        all_token_texts = []
-        for training_data in training_data_list:
-            data_list = to_list(training_data.get_dataframe)
-
-            for item in data_list:
-                all_token_texts.append(TextToken(
-                    text=item,
-                    language=language,
-                    remove_stopwords=remove_stopwords
-                ))
-
-        TextToken.objects.bulk_create(all_token_texts, ignore_conflicts=True)
+        # training_data_list = TrainingData.objects.all()
+        # all_token_texts = []
+        # for training_data in training_data_list:
+        #     data_list = to_list(training_data.get_dataframe)
+        #
+        #     for item in data_list:
+        #         all_token_texts.append(TextToken(
+        #             text=item,
+        #             language=language,
+        #             remove_stopwords=remove_stopwords
+        #         ))
+        #
+        # TextToken.objects.bulk_create(all_token_texts, ignore_conflicts=True)
 
         all_token_texts = TextToken.objects.all()
 
@@ -277,9 +262,7 @@ class TokenizeView(FormView):
                 language=text_token.language,
                 remove_stopwords=text_token.remove_stopwords
             )
-            # tokens = map(lambda text_str: Token(value=text_str, token_text=text_token), token_set)
-            # tokens = [Token(value=text_str, token_text=text_token) for text_str in token_set]
-            # all_tokens += tokens
+
             for text_str in token_set:
                 all_tokens.append(Token(value=text_str, token_text=text_token))
 

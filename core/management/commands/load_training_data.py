@@ -2,7 +2,7 @@
 Command to get tokens from one text
 """
 from django.core.management.base import BaseCommand
-from analysis.functions import load_training_data
+from core.core_functions import load_training_data
 
 
 class Command(BaseCommand):

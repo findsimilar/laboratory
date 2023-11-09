@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
     <h2>Traning data list</h2>
-    <a href="{% url 'analysis:clear_training_data' %}" class="btn btn-danger">Clear all training data</a>
+    <a href="{% url 'core:clear_training_data' %}" class="btn btn-danger">Clear all training data</a>
 {% endblock %}
 {% block results %}
 
@@ -17,7 +17,7 @@
   {% for object in object_list %}
     <tr>
         <td>
-            <a href="{% url 'analysis:training_data' pk=object.pk %}">{{object.name}}</a>
+            <a href="{% url 'core:training_data' pk=object.pk %}">{{object.name}}</a>
         </td>
         <td>
             {{object.columns_count}}
@@ -29,16 +29,16 @@
             {{object.update}}
         </td>
         <td>
-            <a class="btn btn-info" href="{% url 'analysis:training_data' pk=object.pk %}">Detail</a>
+            <a class="btn btn-info" href="{% url 'core:training_data' pk=object.pk %}">Detail</a>
         </td>
         <td>
-            <a class="btn btn-danger" href="{% url 'analysis:delete_training_data' pk=object.pk %}">Delete</a>
+            <a class="btn btn-danger" href="{% url 'core:delete_training_data' pk=object.pk %}">Delete</a>
         </td>
 
     </tr>
   {% endfor %}
 </table>
 <p></p>
-<a class="btn btn-primary" href="{% url 'analysis:load_training_data' %}">New</a>
+<a class="btn btn-primary" href="{% url 'core:load_training_data' %}">New</a>
 
 {% endblock %}

@@ -4,6 +4,10 @@ Core functions to analyze find_similar proximity
 import numpy as np
 from find_similar import TokenText, find_similar
 
+from utils.decorators import Printer
+from .loaders import load_from_excel
+from .models import TrainingData
+
 
 def to_matrix(data: list) -> np.matrix:
     """
@@ -106,3 +110,15 @@ def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: i
 
 def calculate_total_rating(percent_results: np.matrix):
     return percent_results.mean()
+
+
+@Printer(title=lambda name, filepath, sheet_name=0, **kwargs: f'Loading data from "{filepath}"...')
+def load_training_data(name, filepath, sheet_name=0):
+    dataframe = load_from_excel(filepath, sheet_name)
+
+    # remove Null values
+    dataframe = dataframe.dropna()
+
+    # TrainingData
+    training_data = TrainingData.objects.create(name=name, data=dataframe.to_json())
+    return training_data
