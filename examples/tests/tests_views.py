@@ -1,7 +1,8 @@
 from django.urls import reverse
 from dry_tests import SimpleTestCase, Request, TrueResponse, POST, Context, ContentValue
+from find_similar.examples import examples_set  # pylint: disable=import-error
 from examples.forms import OneTextForm
-from find_similar.examples import examples_set
+
 
 FORM_CONTENT_VALUES = [
                 ContentValue(

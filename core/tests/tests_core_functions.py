@@ -1,22 +1,8 @@
 import numpy as np
-from django.test import SimpleTestCase
-from find_similar import TokenText
-
+from django.test import SimpleTestCase, TestCase
+from find_similar import TokenText  # pylint: disable=import-error
 from core.models import TrainingData
 from core.tests.data import get_2x2_filepath, get_2x2_expected_data
-
-
-def eq(self, other):
-    # if other is None:
-    #     return False
-    return self.text == other.text
-
-# def lt(self, other):
-#     return self.cos < other.cos
-
-TokenText.__eq__ = eq
-# TokenText.__lt__ = lt
-
 from core.core_functions import (
     to_matrix,
     str_to_token_text,
@@ -28,6 +14,17 @@ from core.core_functions import (
     get_matrix_head,
     compare, calculate_total_rating, load_training_data,
 )
+
+def eq(self, other):
+    # if other is None:
+    #     return False
+    return self.text == other.text
+
+# def lt(self, other):
+#     return self.cos < other.cos
+
+TokenText.__eq__ = eq
+# TokenText.__lt__ = lt
 
 
 class CoreFunctionsSimpleTestCase(SimpleTestCase):
@@ -134,7 +131,7 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
             self.assertIsInstance(new, list)
             x, y = old.shape
             count = x * y
-            # self.assertEqual(len(new), count)
+            self.assertEqual(len(new), count)
             self.assertEqual(new, param['value'])
 
     def test_find_similar_vector(self):
@@ -307,7 +304,7 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
         self.assertEqual(report[(1, 1)], 0)
 
         total_rating = calculate_total_rating(report)
-        self.assertTrue(total_rating > 33 and total_rating < 34)
+        self.assertTrue(33 < total_rating < 34)
 
         # Here we can check several lines
         report = compare(results, training_data, 2)
@@ -315,30 +312,13 @@ class CoreFunctionsSimpleTestCase(SimpleTestCase):
         self.assertEqual(report[(2, 1)], 0)
 
         total_rating = calculate_total_rating(report)
-        self.assertTrue(total_rating > 49 and total_rating < 51)
+        self.assertTrue(49 < total_rating < 51)
 
         report = compare(results, training_data, 3)
         self.assertEqual(report[(2, 1)], 100)
 
         total_rating = calculate_total_rating(report)
         self.assertEqual(total_rating, 100)
-
-
-"""
-Tests for Analysis functions
-"""
-from django.test import SimpleTestCase, TestCase
-
-from utils.decorators import Printer
-
-from analysis.functions import (
-    analyze_one_item,
-    analyze_two_items,
-    # example_frequency_analysis,
-    # load_training_data,
-)
-# from analysis.tests.data import get_2x2_filepath, get_2x2_expected_data, get_2x2_training_data, Token
-# from analysis.models import TrainingData
 
 
 class TestingPrinter:
@@ -354,82 +334,6 @@ class TestingPrinter:
 
     def __call__(self, text, *args, **kwargs):
         self.results.append(str(text))
-
-class FunctionsSimpleTestCase(SimpleTestCase):
-    """
-    Class for test all functions
-    """
-    def setUp(self):
-        self.one = 'one'
-        self.two = 'two'
-        self.one_two = 'one two'
-        self.printer = print
-
-        def mock_printer(*args, **kwargs):  # pylint: disable=unused-argument
-            """
-            This is mock printer. This printer do nothing
-            """
-
-        self.mock_printer = mock_printer
-
-        self.testing_printer = TestingPrinter()
-
-    def test_analyze_one_item(self):
-        """
-        Test for analyze one item
-        """
-        tokens = analyze_one_item(  # pylint: disable=unexpected-keyword-arg
-            self.one_two,
-            printer=self.testing_printer
-        )
-        expected_tokens = {self.one, self.two}
-        self.assertEqual(tokens, expected_tokens)
-
-    def test_analyze_two_items(self):
-        """
-        Test for analyze_two_items
-        """
-        similar_cos = 1.0
-        different_cos = 0
-        self.assertEqual(
-            analyze_two_items(  # pylint: disable=unexpected-keyword-arg
-                self.one,
-                self.one,
-                printer=self.mock_printer,
-                is_pass_printer=True,
-            ),
-            similar_cos
-        )
-        self.assertEqual(
-            analyze_two_items(  # pylint: disable=unexpected-keyword-arg
-                self.one,
-                self.two,
-                printer=self.testing_printer,
-                is_pass_printer=True,
-            ),
-            different_cos)
-        one_tokens = {self.one}
-        two_tokens = {self.two}
-        # prints
-        expected_prints = [
-            'Start',
-            f'Get cos between '
-            f'"{self.one}" and "{self.two}"',
-            'Start',
-            f'Get tokens for {self.one}...',
-            'Done:',
-            f'{one_tokens}',
-            'End',
-            'Start',
-            f'Get tokens for {self.two}...',
-            'Done:',
-            f'{two_tokens}',
-            'End',
-            'Done:',
-            f'{different_cos}',
-            'End',
-        ]
-        self.assertEqual(self.testing_printer.results, expected_prints)
 
 class FunctionsTestCase(TestCase):
 

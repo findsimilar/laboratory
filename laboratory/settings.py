@@ -15,10 +15,10 @@ import os
 import sys
 
 sys.path.append("../find-similar")
-from find_similar import find_similar  # pylint: disable=wrong-import-position
-from find_similar.tokenize import tokenize  # pylint: disable=wrong-import-position
-from find_similar.calc_functions import calc_cosine_similarity_opt  # pylint: disable=wrong-import-position
-from find_similar.examples.analyze import frequency_analysis # pylint: disable=wrong-import-position
+from find_similar import find_similar  # pylint: disable=import-error,wrong-import-position
+from find_similar.tokenize import tokenize  # pylint: disable=import-error,wrong-import-position
+from find_similar.calc_functions import calc_cosine_similarity_opt  # pylint: disable=import-error,wrong-import-position
+from find_similar.examples.analyze import frequency_analysis # pylint: disable=import-error,wrong-import-position
 
 FIND_SIMILAR = find_similar
 TOKENIZE = tokenize

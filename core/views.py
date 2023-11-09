@@ -15,10 +15,16 @@ from django.views.generic import (
     FormView,
 )
 from django.conf import settings
-from django_find_similar.forms import FindSimilarParamsForm
 
-from core.core_functions import load_training_data, tokenize_vector, matrix_to_list, find_similar_vector, \
-    reshape_results_vector, compare, calculate_total_rating
+from core.core_functions import (
+    load_training_data,
+    tokenize_vector,
+    matrix_to_list,
+    find_similar_vector,
+    reshape_results_vector,
+    compare,
+    calculate_total_rating,
+)
 from core.forms import LoadTrainingDataForm, TotalRatingForm
 from core.models import TrainingData
 
@@ -47,7 +53,11 @@ class LoadTrainingDataView(FormView):
         uploaded_path = self.handle_uploaded_file(excel_file)
         name = data['name']
         sheet_name = data.get('sheet_name', 0)
-        self.training_data = load_training_data(name=name, filepath=uploaded_path, sheet_name=sheet_name)
+        self.training_data = load_training_data(
+            name=name,
+            filepath=uploaded_path,
+            sheet_name=sheet_name
+        )
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -106,7 +116,11 @@ class TotalRatingFormView(FormView):
         arr = dataframe.to_numpy()
         training_data = np.asmatrix(arr)
 
-        training_data = tokenize_vector(training_data, language=language, remove_stopwords=remove_stopwords)
+        training_data = tokenize_vector(
+            training_data,
+            language=language,
+            remove_stopwords=remove_stopwords
+        )
         texts = matrix_to_list(training_data)
         similars = find_similar_vector(text_to_check=training_data, texts=texts, count=len(texts))
         results = reshape_results_vector(results=similars, shape=training_data.shape)

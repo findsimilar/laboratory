@@ -1,7 +1,6 @@
 """
 Tests for views
 """
-from django_find_similar.forms import FindSimilarParamsForm
 from mixer.backend.django import mixer
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
@@ -92,7 +91,7 @@ class LoadTrainingDataViewTestCase(TestCase):
 
     def test_post(self):
         filepath = get_2x2_filepath()
-        excel_file = SimpleUploadedFile(filepath, open(filepath, 'rb').read())
+        excel_file = SimpleUploadedFile(filepath, open(filepath, 'rb').read())  # pylint: disable=consider-using-with
         name = 'first'
         data = {
             'name': name,
@@ -182,7 +181,11 @@ class TrainingDataListViewTestCase(TestCase):
         )
         current_response = request.get_response(self.client)
         self.assertTrueResponse(current_response, true_response)
-        self.assertQuerySetEqual(current_response.context['object_list'], self.training_data_list, ordered=False)
+        self.assertQuerySetEqual(
+            current_response.context['object_list'],
+            self.training_data_list,
+            ordered=False
+        )
 
 
 class TrainingDataDeleteView(TestCase):

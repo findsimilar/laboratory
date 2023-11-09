@@ -22,7 +22,12 @@ class Command(BaseCommand):
         """
         parser.add_argument("name", type=str)
         parser.add_argument("filepath", type=str)
-        parser.add_argument("sheet_name", type=int, nargs='?', default=0)  # TODO: make available to send str name
+        parser.add_argument(
+            "sheet_name",
+            type=int,
+            nargs='?',
+            default=0
+        )  # TODO: make available to send str name
 
     def handle(self, *args, **options):
         """

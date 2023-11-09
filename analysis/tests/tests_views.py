@@ -1,9 +1,10 @@
 """
 Tests for views
 """
-from django.core.files.uploadedfile import SimpleUploadedFile
+from mixer.backend.django import mixer
 from django.urls import reverse
 from django_find_similar.models import CheckResult, TextToken, Token
+from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
 from dry_tests import (
     TestCase,
     SimpleTestCase,
@@ -13,9 +14,7 @@ from dry_tests import (
     Context,
     POST,
 )
-from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
-from mixer.backend.django import mixer
-from analysis.forms import OneTextForm, TwoTextForm
+from analysis.forms import TwoTextForm
 from analysis.urls import app_name
 
 
@@ -292,7 +291,8 @@ class TestCompareTwo(SimpleTestCase):
 #
 #     def setUp(self):
 #         self.url = reverse('analysis:training_data_list')
-#         self.training_data_list = [get_2x2_training_data('first'), get_2x2_training_data('second')]
+#         self.training_data_list = [get_2x2_training_data('first'),
+#         get_2x2_training_data('second')]
 #
 #     def test_get(self):
 #         request = Request(
@@ -307,7 +307,8 @@ class TestCompareTwo(SimpleTestCase):
 #         )
 #         current_response = request.get_response(self.client)
 #         self.assertTrueResponse(current_response, true_response)
-#         self.assertQuerySetEqual(current_response.context['object_list'], self.training_data_list, ordered=False)
+#         self.assertQuerySetEqual(current_response.context['object_list'],
+#         self.training_data_list, ordered=False)
 #
 #
 # class TrainingDataDeleteView(TestCase):
@@ -395,7 +396,7 @@ class FindSimilarViewTestCase(TestCase):
 
         true_response = TrueResponse(
             status_code=302,
-            redirect_url=f'/analysis/result-list/'
+            redirect_url='/analysis/result-list/'
         )
 
         current_response = request.get_response(self.client)

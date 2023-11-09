@@ -1,32 +1,27 @@
 """
 Analysis views
 """
-import cProfile
-import os
-import numpy as np
-import pandas as pd
-
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.views.generic import FormView, DetailView, ListView, DeleteView
+from django.shortcuts import render
+from django.views.generic import FormView, DetailView, ListView
 from django.urls import reverse, reverse_lazy
-from django.conf import settings
 from django_find_similar.forms import FindSimilarForm, FindSimilarParamsForm
-from django_find_similar.models import TextToken, TokenTextAdapter, CheckResult, Token, CheckResultItem
-from find_similar import find_similar
-from find_similar.tokenize import tokenize
-
+from django_find_similar.models import (
+    TextToken,
+    TokenTextAdapter,
+    CheckResult,
+    Token,
+    CheckResultItem,
+)
+from find_similar import find_similar  # pylint: disable=import-error
+from find_similar.tokenize import tokenize  # pylint: disable=import-error
 from analysis.functions import (
     analyze_one_item,
     analyze_two_items,
 )
-from core.core_functions import tokenize_vector, matrix_to_list, find_similar_vector, reshape_results_vector, compare, \
-    calculate_total_rating
 from .forms import (
-    OneTextForm,
     TwoTextForm,
 )
-# from .models import TrainingData, to_list
 
 
 class TokenizeOneView(FormView):
@@ -109,7 +104,8 @@ class CompareTwoView(FormView):
 #         uploaded_path = self.handle_uploaded_file(excel_file)
 #         name = data['name']
 #         sheet_name = data.get('sheet_name', 0)
-#         self.training_data = load_training_data(name=name, filepath=uploaded_path, sheet_name=sheet_name)
+#         self.training_data = load_training_data(name=name,
+#         filepath=uploaded_path, sheet_name=sheet_name)
 #         return super().form_valid(form)
 #
 #     def get_success_url(self):
@@ -233,9 +229,9 @@ class TokenizeView(FormView):
     success_url = reverse_lazy('analysis:text_token_list')
 
     def form_valid(self, form):
-        cleaned_data = form.cleaned_data
-        language = cleaned_data['language']
-        remove_stopwords = cleaned_data['remove_stopwords']
+        # cleaned_data = form.cleaned_data
+        # language = cleaned_data['language']
+        # remove_stopwords = cleaned_data['remove_stopwords']
         # Make all training data (In a future we shout get just one)
         # training_data_list = TrainingData.objects.all()
         # all_token_texts = []

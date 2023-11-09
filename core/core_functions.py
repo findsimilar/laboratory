@@ -2,7 +2,7 @@
 Core functions to analyze find_similar proximity
 """
 import numpy as np
-from find_similar import TokenText, find_similar
+from find_similar import TokenText, find_similar  # pylint: disable=import-error
 
 from utils.decorators import Printer
 from .loaders import load_from_excel
@@ -48,7 +48,13 @@ def matrix_to_list(matrix: np.matrix) -> list:
     return list(matrix_to_one_line(matrix))
 
 
-# def find_similar_or_none(text_to_check, texts, language="english", count=5, dictionary=None, keywords=None):
+# def find_similar_or_none(
+# text_to_check,
+# texts,
+# language="english",
+# count=5,
+# dictionary=None,
+# keywords=None):
 #     if text_to_check is None:
 #         return
 #     return find_similar(text_to_check, texts, language, count, dictionary, keywords)
@@ -93,7 +99,11 @@ def calc_percent(similar_count, column_count):
     return (similar_count - 1) * 100 / (column_count - 1)
 
 
-def compare(results_matrix: np.matrix, training_data_matrix: np.matrix, count: int = 1) -> np.matrix:
+def compare(
+        results_matrix: np.matrix,
+        training_data_matrix: np.matrix,
+        count: int = 1
+    ) -> np.matrix:
     result = np.empty(training_data_matrix.shape, dtype=np.float16)
     row_count, col_count = training_data_matrix.shape
     for i in range(row_count):

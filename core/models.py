@@ -24,6 +24,7 @@ class TrainingData(models.Model):
     def get_rating_data(self) -> pd.DataFrame:
         if self.rating_data:
             return pd.read_json(StringIO(self.rating_data), dtype=str)
+        return None
 
     @property
     def columns_count(self):
@@ -39,5 +40,6 @@ class TrainingData(models.Model):
 
     def display_rating_data(self):
         dataframe = self.get_rating_data
-        if dataframe is not None:
-            return dataframe.head(10)
+        if dataframe is None:
+            return None
+        return dataframe.head(10)

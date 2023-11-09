@@ -1,4 +1,4 @@
-from find_similar.examples.analyze import frequency_analysis
+from find_similar.examples.analyze import frequency_analysis  # pylint: disable=import-error
 from utils.decorators import Printer
 
 

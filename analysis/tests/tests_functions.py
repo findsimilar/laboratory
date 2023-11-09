@@ -1,18 +1,11 @@
 """
 Tests for Analysis functions
 """
-from django.test import SimpleTestCase, TestCase
-
-from utils.decorators import Printer
-
+from django.test import SimpleTestCase
 from analysis.functions import (
     analyze_one_item,
     analyze_two_items,
-    # example_frequency_analysis,
-    # load_training_data,
 )
-# from analysis.tests.data import get_2x2_filepath, get_2x2_expected_data, get_2x2_training_data, Token
-# from analysis.models import TrainingData
 
 
 class TestingPrinter:

@@ -2,7 +2,6 @@
 Forms
 """
 from django import forms
-from django_find_similar.forms import FindSimilarForm
 
 
 class OneTextForm(forms.Form):

@@ -1,8 +1,8 @@
 from django.views.generic import FormView, TemplateView
 from django.urls import reverse
+from find_similar.examples import examples_set  # pylint: disable=import-error
 from .forms import OneTextForm
 from .functions import example_frequency_analysis
-from find_similar.examples import examples_set
 
 
 class ExampleFrequencyAnalysis(FormView):

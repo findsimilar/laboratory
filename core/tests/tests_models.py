@@ -1,5 +1,5 @@
 import pandas as pd
-from django.test import TestCase, SimpleTestCase
+from django.test import TestCase
 from core.models import (
     TrainingData,
     # to_list,

@@ -31,4 +31,3 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
             true_reverse = f'/{app_name}/{url["reverse"]}'
             with self.subTest(msg=app_url):
                 self.assertEqual(current_reverse, true_reverse)
-

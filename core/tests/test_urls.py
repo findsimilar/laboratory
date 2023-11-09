@@ -1,7 +1,6 @@
 """
 Test urls module
 """
-from mixer.backend.django import mixer
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 
