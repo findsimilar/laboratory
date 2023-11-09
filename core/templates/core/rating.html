@@ -21,9 +21,7 @@
             {{object.rows_count}}
         </td>
         <td>
-            <b>
-                <a href="{% url 'core:rating' pk=object.pk %}">{{object.total_rating}}</a>  %
-            </b>
+            <b>{{object.total_rating}} %</b>
         </td>
         <td>
             {{object.update}}
@@ -36,7 +34,9 @@
 
 {% endblock %}
 {% block results %}
-    {% with object.display_dataframe as data %}
+    <h3>Top 10 results display</h3>
+
+    {% with object.display_rating_data as data %}
     <table class="table table-striped">
         <tr>
             {% for column in data.columns %}

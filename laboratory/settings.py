@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'examples',
     'core',
     'analysis',
+    'utils',
 ]
 
 MIDDLEWARE = [

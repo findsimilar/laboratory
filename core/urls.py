@@ -13,4 +13,6 @@ urlpatterns = [
     path('delete-training-data/<int:pk>/', views.TrainingDataDeleteView.as_view(), name="delete_training_data"),
     path('training-data-list/', views.TrainingDataListView.as_view(), name="training_data_list"),
     path('clear-training-data/', views.clear_training_data, name="clear_training_data"),
+    path('total-rating-form/<int:pk>/', views.TotalRatingFormView.as_view(), name="total_rating_form"),
+    path('rating/<int:pk>/', views.RatingView.as_view(), name="rating"),
 ]

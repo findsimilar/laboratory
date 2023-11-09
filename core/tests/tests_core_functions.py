@@ -7,8 +7,8 @@ from core.tests.data import get_2x2_filepath, get_2x2_expected_data
 
 
 def eq(self, other):
-    if other is None:
-        return False
+    # if other is None:
+    #     return False
     return self.text == other.text
 
 # def lt(self, other):

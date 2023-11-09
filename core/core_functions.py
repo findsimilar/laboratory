@@ -18,7 +18,7 @@ def to_matrix(data: list) -> np.matrix:
     return np.matrix(data)
 
 
-def str_to_token_text(text: str) -> TokenText:
+def str_to_token_text(text: str, language='english', remove_stopwords=True) -> TokenText:
     """
     Create TokenText from text str
     :param text: some str text
@@ -26,10 +26,10 @@ def str_to_token_text(text: str) -> TokenText:
     """
     # if text is None:
     #     return
-    return TokenText(text)
+    return TokenText(text, language=language, remove_stopwords=remove_stopwords)
 
 
-tokenize_vector = np.vectorize(str_to_token_text)
+tokenize_vector = np.vectorize(str_to_token_text, excluded=['language', 'remove_stopwords'])
 
 
 def matrix_to_one_line(matrix: np.matrix) -> np.ndarray:
@@ -48,10 +48,10 @@ def matrix_to_list(matrix: np.matrix) -> list:
     return list(matrix_to_one_line(matrix))
 
 
-def find_similar_or_none(text_to_check, texts, language="english", count=5, dictionary=None, keywords=None):
-    if text_to_check is None:
-        return
-    return find_similar(text_to_check, texts, language, count, dictionary, keywords)
+# def find_similar_or_none(text_to_check, texts, language="english", count=5, dictionary=None, keywords=None):
+#     if text_to_check is None:
+#         return
+#     return find_similar(text_to_check, texts, language, count, dictionary, keywords)
 
 
 find_similar_vector = np.vectorize(find_similar, otypes=[TokenText], excluded=[

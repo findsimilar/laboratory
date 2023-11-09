@@ -29,6 +29,7 @@ class TestingPrinter:
     def __call__(self, text, *args, **kwargs):
         self.results.append(str(text))
 
+
 class FunctionsSimpleTestCase(SimpleTestCase):
     """
     Class for test all functions

@@ -10,6 +10,7 @@
         <th>Name</th>
         <th>Columns count</th>
         <th>Rows count</th>
+        <th>Last Total Rating</th>
         <th>Updated</th>
         <th>Detail</th>
         <th>Delete</th>
@@ -24,6 +25,12 @@
         </td>
         <td>
             {{object.rows_count}}
+        </td>
+        <td>
+          <b>
+                <a href="{% url 'core:rating' pk=object.pk %}">{{object.total_rating}}</a>  %
+            </b>
+            <a class="btn btn-primary" href="{% url 'core:total_rating_form' pk=object.pk %}">Total rating</a>
         </td>
          <td>
             {{object.update}}

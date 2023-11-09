@@ -72,6 +72,13 @@ class TestUrlsTestCase(TestCase):
                 },
                 'reverse': f'delete-training-data/{training_data.pk}/',
             },
+            {
+                'url': 'rating',
+                'kwargs': {
+                    'pk': training_data.pk
+                },
+                'reverse': f'rating/{training_data.pk}/',
+            },
         ]
         for url in urls:
             app_url = f'{app_name}:{url["url"]}'
