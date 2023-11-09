@@ -1,21 +1,95 @@
 {% extends "base.html" %}
 {% block main %}
 <h1>FindSimilar Laboratory</h1>
-<h2>Examples</h2>
-<ul class="list-group">
-    <li class="list-group-item">
-    <a class="link" href="{% url 'examples:example_list' %}">
-              <span data-feather="file"></span>
-              Example list
-            </a>
-    </li>
-    <li class="list-group-item">
-         <a class="link" href="{% url 'examples:example_frequency' %}">
+
+<div class="container">
+    <div class="row">
+        <div class="card col-md-12">
+          <div class="card-body">
+            <h4 class="card-title">Proximity Calculation</h4>
+             <ul class="list-group">
+              <li class="list-group-item">
+                <a class="link" href="{% url 'analysis:tokenize_one' %}">
+                  <span data-feather="file"></span>
+                  One text tokens
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a class="link" href="{% url 'analysis:compare_two' %}">
+                  <span data-feather="file"></span>
+                  Compare two texts
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+    <p></p>
+    <div class="row">
+
+<div class="card col-md-4">
+  <div class="card-body">
+    <h4 class="card-title">Texts, Tokens, Find similar</h4>
+     <ul class="list-group">
+      <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:tokenize_one' %}">
           <span data-feather="file"></span>
-          Example frequency
+          One text tokens
         </a>
-    </li>
-</ul>
+      </li>
+      <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:compare_two' %}">
+          <span data-feather="file"></span>
+          Compare two texts
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="card col-md-4">
+  <div class="card-body">
+    <h4 class="card-title">Examples</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="{% url 'examples:example_list' %}">
+                  <span data-feather="file"></span>
+                  Example list
+                </a>
+        </li>
+        <li class="list-group-item">
+             <a class="link" href="{% url 'examples:example_frequency' %}">
+              <span data-feather="file"></span>
+              Example frequency
+            </a>
+        </li>
+    </ul>
+  </div>
+</div>
+
+        <div class="card col-md-4">
+  <div class="card-body">
+    <h4 class="card-title">Admin</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="/admin/">
+                  <span data-feather="file"></span>
+                  Admin Page
+                </a>
+        </li>
+        <li class="list-group-item">
+             <a class="link" href="#">
+              <span data-feather="file"></span>
+              Create Superuser
+            </a>
+        </li>
+    </ul>
+  </div>
+</div>
+</div>
+</div>
+
 {% endblock %}
 {% block results %}
     ...

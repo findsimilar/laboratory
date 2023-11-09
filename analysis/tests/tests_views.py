@@ -58,7 +58,7 @@ class TestTokenizeOneView(SimpleTestCase):
         true_response = TrueResponse(
             status_code=200,
             context=Context(
-                types={'form': OneTextForm}
+                types={'form': FindSimilarForm}
             ),
             content_values=FORM_CONTENT_VALUES
         )
@@ -94,7 +94,9 @@ class TestTokenizeOneView(SimpleTestCase):
         Test Post
         """
         data = {
-            'text': self.text
+            'text': self.text,
+            'language': 'english',
+            'remove_stopwords': True,
         }
         request = Request(
             url=self.url,

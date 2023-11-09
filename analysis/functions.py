@@ -1,18 +1,19 @@
 """
 Analysis functions
 """
+from find_similar.tokenize import tokenize
 from django.conf import settings
 from .loaders import load_from_excel
 from .models import TrainingData, to_list
 from utils.decorators import Printer
 
 
-@Printer(title=lambda item, **kwargs: f'Get tokens for {item}...')
-def analyze_one_item(item, dictionary=None, language="russian"):
+@Printer(title=lambda text, **kwargs: f'Get tokens for {text}...')
+def analyze_one_item(text, language="english", remove_stopwords=True):
     """
     Analyze one item for tokenize
     """
-    tokens = settings.TOKENIZE(item, language=language, dictionary=dictionary)
+    tokens = tokenize(text, language=language, remove_stopwords=remove_stopwords)
     return tokens
 
 
