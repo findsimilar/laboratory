@@ -6,8 +6,6 @@ from django.urls import reverse
 from django_find_similar.models import CheckResult, TextToken
 from mixer.backend.django import mixer
 
-from analysis.tests.data import get_2x2_training_data
-
 
 class TestUrlsSimpleTestCase(SimpleTestCase):
     """
@@ -28,18 +26,14 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
                 'url': 'compare_two',
                 'reverse': 'compare-two/',
             },
-            {
-                'url': 'example_frequency',
-                'reverse': 'example-frequency/',
-            },
-            {
-                'url': 'load_training_data',
-                'reverse': 'load-training-data/',
-            },
-            {
-                'url': 'training_data_list',
-                'reverse': 'training-data-list/',
-            },
+            # {
+            #     'url': 'load_training_data',
+            #     'reverse': 'load-training-data/',
+            # },
+            # {
+            #     'url': 'training_data_list',
+            #     'reverse': 'training-data-list/',
+            # },
             {
                 'url': 'result_list',
                 'reverse': 'result-list/',
@@ -48,10 +42,10 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
                 'url': 'text_token_list',
                 'reverse': 'text-token-list/',
             },
-            {
-                'url': 'clear_training_data',
-                'reverse': 'clear-training-data/',
-            },
+            # {
+            #     'url': 'clear_training_data',
+            #     'reverse': 'clear-training-data/',
+            # },
             {
                 'url': 'clear_text_token',
                 'reverse': 'clear-text-token/',
@@ -59,6 +53,10 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
             {
                 'url': 'tokenize',
                 'reverse': 'tokenize/',
+            },
+            {
+                'url': 'find_similar',
+                'reverse': 'find-similar/',
             },
         ]
         for url in urls:
@@ -78,34 +76,11 @@ class TestUrlsTestCase(TestCase):
         """
         Test correct reverse
         """
-
-        training_data = get_2x2_training_data()
         check_result = mixer.blend(CheckResult)
         text_token = mixer.blend(TextToken)
 
         app_name = 'analysis'
         urls = [
-            {
-                'url': 'training_data',
-                'kwargs': {
-                    'pk': training_data.pk
-                },
-                'reverse': f'training-data/{training_data.pk}/',
-            },
-            {
-                'url': 'delete_training_data',
-                'kwargs': {
-                    'pk': training_data.pk
-                },
-                'reverse': f'delete-training-data/{training_data.pk}/',
-            },
-            {
-                'url': 'find_similar',
-                'kwargs': {
-                    'pk': training_data.pk
-                },
-                'reverse': f'find-similar/{training_data.pk}/',
-            },
             {
                 'url': 'result',
                 'kwargs': {

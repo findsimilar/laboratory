@@ -53,32 +53,6 @@ make coverage
 make lint
 ```
 
-## Use find_similar core function
-
-Instead of:
-```python
-from find_similar import find_similar  # You will get import error in this case
-```
-
-Use:
-```python
-from django.conf import settings
-settings.FIND_SIMILAR('none', ['one', 'two'])
-settings.TOKENIZE('some text')
-```
-
-Or if you don't like UPPER_CASE:
-```python
-from django.conf import settings
-find_similar = settings.FIND_SIMILAR
-tokenize = settings.TOKENIZE
-
-find_similar('none', ['one', 'two'])
-tokenize('some text')
-```
-
-Looks weird, please make pull request if you find a better way
-
 ## Management commands
 
 ### Get tokens from one text
@@ -128,11 +102,6 @@ Done:
 End
 ```
 
-With make:
-```commandline
-make one="one" two="two" compare_two
-```
-
 ### Example frequency analysis
 
 Input:
@@ -149,11 +118,6 @@ Done:
 End
 ```
 
-With make:
-```commandline
-make example="mock" example_frequency_analysis
-```
-
 ### Load training data
 
 Input:
@@ -168,11 +132,6 @@ Loading data from "analysis/tests/data/2x2.xlsx"...
 Done:
 TrainingData object (None)
 End
-```
-
-With make:
-```commandline
-make load_traning_data name=2x2 filepath=analysis/tests/data/2x2.xlsx sheet_name=0
 ```
 
 ## FAQ

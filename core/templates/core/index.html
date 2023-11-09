@@ -1,7 +1,142 @@
 {% extends "base.html" %}
 {% block main %}
-<h1>Still just main Page...</h1>
+<div class="container">
+    <div class="row">
+        <div class="card col-md-12">
+          <div class="card-body">
+            <h4 class="card-title">Proximity Calculation</h4>
+             <ul class="list-group">
+              <li class="list-group-item">
+                <a class="link" href="{% url 'analysis:tokenize_one' %}">
+                  <span data-feather="file"></span>
+                  One text tokens
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a class="link" href="{% url 'analysis:compare_two' %}">
+                  <span data-feather="file"></span>
+                  Compare two texts
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+    <p></p>
+    <div class="row">
+
+<div class="card col-md-4">
+  <div class="card-body">
+    <h4 class="card-title">Texts, Tokens, Find similar</h4>
+     <ul class="list-group">
+      <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:tokenize_one' %}">
+          <span data-feather="file"></span>
+          One text tokens
+        </a>
+      </li>
+      <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:compare_two' %}">
+          <span data-feather="file"></span>
+          Compare two texts
+        </a>
+      </li>
+      <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:text_token_list' %}">
+          <span data-feather="file"></span>
+          TextToken list
+        </a>
+      </li>
+         <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:tokenize' %}">
+          <span data-feather="file"></span>
+          Tokenize
+        </a>
+      </li>
+          <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:find_similar' %}">
+          <span data-feather="file"></span>
+          Find Similar
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="card col-md-4">
+  <div class="card-body">
+    <h4 class="card-title">Examples</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="{% url 'examples:example_list' %}">
+                  <span data-feather="file"></span>
+                  Example list
+                </a>
+        </li>
+        <li class="list-group-item">
+             <a class="link" href="{% url 'examples:example_frequency' %}">
+              <span data-feather="file"></span>
+              Example frequency
+            </a>
+        </li>
+    </ul>
+  </div>
+</div>
+
+        <div class="card col-md-4">
+  <div class="card-body">
+    <h4 class="card-title">Admin</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="/admin/">
+                  <span data-feather="file"></span>
+                  Admin Page
+                </a>
+        </li>
+        <li class="list-group-item">
+             <a class="link" href="#">
+              <span data-feather="file"></span>
+              Create Superuser
+            </a>
+        </li>
+    </ul>
+  </div>
+</div>
+</div>
+</div>
+
 {% endblock %}
 {% block results %}
-    ...
+    <div class="container">
+        <div class="row">
+            <div class="card col-md-6">
+  <div class="card-body">
+    <h4 class="card-title">Proximity results</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="{% url 'examples:example_list' %}">
+                  <span data-feather="file"></span>
+                  Example list
+                </a>
+        </li>
+    </ul>
+  </div>
+</div>
+
+<div class="card col-md-6">
+  <div class="card-body">
+    <h4 class="card-title">Text results</h4>
+    <ul class="list-group">
+        <li class="list-group-item">
+        <a class="link" href="{% url 'analysis:result_list' %}">
+                  <span data-feather="file"></span>
+                  Result List
+                </a>
+        </li>
+    </ul>
+  </div>
+</div>
+        </div>
+    </div>
 {% endblock %}

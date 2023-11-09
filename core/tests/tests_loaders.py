@@ -1,12 +1,10 @@
 """
 Test load functions module
 """
-import os
-from django.conf import settings
 import pandas as pd
 from django.test import SimpleTestCase
-from analysis.loaders import load_from_excel
-from analysis.tests.data import get_2x2_filepath, get_2x2_expected_data
+from core.loaders import load_from_excel
+from core.tests.data import get_2x2_filepath, get_2x2_expected_data
 
 
 class LoadersTestCase(SimpleTestCase):

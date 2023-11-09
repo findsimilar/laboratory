@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block main %}
+    <h2>{{object.name}}</h2>
+<p></p>
+<table class="table table-striped">
+    <tr>
+        <th>Name</th>
+        <th>Columns count</th>
+        <th>Rows count</th>
+        <th>Last Total Rating</th>
+        <th>Last Update</th>
+    </tr>
+    <tr>
+        <td>
+            <a href="{% url 'core:training_data' pk=object.pk %}">{{object.name}}</a>
+        </td>
+        <td>
+            {{object.columns_count}}
+        </td>
+        <td>
+            {{object.rows_count}}
+        </td>
+        <td>
+            <b>{{object.total_rating}} %</b>
+        </td>
+        <td>
+            {{object.update}}
+        </td>
+    </tr>
+
+</table>
+<a class="btn btn-primary" href="{% url 'core:total_rating_form' pk=object.pk %}">Total rating</a>
+<a class="btn btn-danger" href="{% url 'core:delete_training_data' pk=object.pk %}">Delete</a>
+
+{% endblock %}
+{% block results %}
+    <h3>Top 10 results display</h3>
+
+    {% with object.display_rating_data as data %}
+    <table class="table table-striped">
+        <tr>
+            {% for column in data.columns %}
+                <th>
+                    {{column}}
+                </th>
+            {% endfor %}
+        </tr>
+        {% for index, row in data.iterrows %}
+          <tr>
+            {% for cell in row %}
+              <td>
+                {{cell}}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+    </table>
+    {% endwith %}
+
+{% endblock %}

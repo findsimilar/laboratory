@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block main %}
+    <h2>FindSimilar examples</h2>
+<a class="btn btn-info" href="{% url 'examples:example_frequency' %}">
+          <span data-feather="file"></span>
+          Example frequency
+        </a>
+{% endblock %}
+{% block results %}
+
+    <ul class="list-group">
+        {% for example in object_list %}
+            <li class="list-group-item">
+                {{example}}
+            </li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}

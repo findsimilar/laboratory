@@ -29,10 +29,10 @@
 - [x] [Support](https://github.com/quillcraftsman/open-source-checklist#support)
 
 [CI and CD](https://github.com/quillcraftsman/open-source-checklist#ci-and-cd)
-- [ ] Tests
-- [ ] Test Coverage
-- [ ] Test Coverage 100%
-- [ ] Linters
+- [x] Tests
+- [x] Test Coverage
+- [x] Test Coverage 100%
+- [x] Linters
 - [ ] Build
 - [ ] Deploy
 - [ ] New User Greetings

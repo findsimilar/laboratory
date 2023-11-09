@@ -15,10 +15,10 @@ import os
 import sys
 
 sys.path.append("../find-similar")
-from find_similar import find_similar  # pylint: disable=wrong-import-position
-from find_similar.tokenize import tokenize  # pylint: disable=wrong-import-position
-from find_similar.calc_functions import calc_cosine_similarity_opt  # pylint: disable=wrong-import-position
-from find_similar.examples.analyze import frequency_analysis # pylint: disable=wrong-import-position
+from find_similar import find_similar  # pylint: disable=import-error,wrong-import-position
+from find_similar.tokenize import tokenize  # pylint: disable=import-error,wrong-import-position
+from find_similar.calc_functions import calc_cosine_similarity_opt  # pylint: disable=import-error,wrong-import-position
+from find_similar.examples.analyze import frequency_analysis # pylint: disable=import-error,wrong-import-position
 
 FIND_SIMILAR = find_similar
 TOKENIZE = tokenize
@@ -52,9 +52,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # others
     'django_find_similar',
+    "debug_toolbar",
     # My
+    'examples',
     'core',
     'analysis',
+    'utils',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -140,3 +144,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]

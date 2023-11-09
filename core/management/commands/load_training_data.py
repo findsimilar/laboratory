@@ -2,7 +2,7 @@
 Command to get tokens from one text
 """
 from django.core.management.base import BaseCommand
-from analysis.functions import load_training_data
+from core.core_functions import load_training_data
 
 
 class Command(BaseCommand):
@@ -22,7 +22,12 @@ class Command(BaseCommand):
         """
         parser.add_argument("name", type=str)
         parser.add_argument("filepath", type=str)
-        parser.add_argument("sheet_name", type=int, nargs='?', default=0)  # TODO: make available to send str name
+        parser.add_argument(
+            "sheet_name",
+            type=int,
+            nargs='?',
+            default=0
+        )  # TODO: make available to send str name
 
     def handle(self, *args, **options):
         """

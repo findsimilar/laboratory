@@ -2,11 +2,11 @@ from dataclasses import dataclass
 import os
 import pandas as pd
 from django.conf import settings
-from analysis.functions import load_training_data
+from core.core_functions import load_training_data
 
 
 def get_2x2_filepath():
-    filepath = os.path.join(settings.BASE_DIR, 'analysis', 'tests', 'data', '2x2.xlsx')
+    filepath = os.path.join(settings.BASE_DIR, 'core', 'tests', 'data', '2x2.xlsx')
     return filepath
 
 
