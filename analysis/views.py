@@ -4,6 +4,7 @@ Analysis views
 import cProfile
 import os
 import numpy as np
+import pandas as pd
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -94,47 +95,47 @@ class CompareTwoView(FormView):
         return context
 
 
-class ExampleFrequencyAnalysis(FormView):
-    """
-    Example Frequency Analysis
-    """
-    form_class = OneTextForm
-    template_name = 'analysis/example_frequency.html'
-
-    def form_valid(self, form):
-        self.text = form.cleaned_data['text']
-        try:
-            self.result = example_frequency_analysis(self.text)
-            self.error = None
-        except FileNotFoundError:
-            self.error = 'example not found'
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        data = self.request.GET.dict()
-        text = data.pop('text', '')
-        context['text'] = text
-        error = data.get('error', None)
-        if error:
-            context['error'] = error
-        else:
-            result = []
-            for key, value in data.items():
-                result.append((key, int(value)))
-            context['result'] = tuple(result)
-        return context
-
-    def get_success_url(self):
-        if self.error:
-            url = f'{reverse("analysis:example_frequency")}?text={self.text}&error={self.error}'
-        else:
-            url_params = []
-            for key, value in self.result:
-                url_params.append(f'{key}={value}')
-            url_params = f'?text={self.text}&{"&".join(url_params)}'
-            url = f'{reverse("analysis:example_frequency")}{url_params}'
-        return url
+# class ExampleFrequencyAnalysis(FormView):
+#     """
+#     Example Frequency Analysis
+#     """
+#     form_class = OneTextForm
+#     template_name = 'analysis/example_frequency.html'
+#
+#     def form_valid(self, form):
+#         self.text = form.cleaned_data['text']
+#         try:
+#             self.result = example_frequency_analysis(self.text)
+#             self.error = None
+#         except FileNotFoundError:
+#             self.error = 'example not found'
+#         return super().form_valid(form)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data()
+#         data = self.request.GET.dict()
+#         text = data.pop('text', '')
+#         context['text'] = text
+#         error = data.get('error', None)
+#         if error:
+#             context['error'] = error
+#         else:
+#             result = []
+#             for key, value in data.items():
+#                 result.append((key, int(value)))
+#             context['result'] = tuple(result)
+#         return context
+#
+#     def get_success_url(self):
+#         if self.error:
+#             url = f'{reverse("analysis:example_frequency")}?text={self.text}&error={self.error}'
+#         else:
+#             url_params = []
+#             for key, value in self.result:
+#                 url_params.append(f'{key}={value}')
+#             url_params = f'?text={self.text}&{"&".join(url_params)}'
+#             url = f'{reverse("analysis:example_frequency")}{url_params}'
+#         return url
 
 
 class LoadTrainingDataView(FormView):
@@ -362,9 +363,11 @@ class TotalRatingFormView(FormView):
         similars = find_similar_vector(text_to_check=training_data, texts=texts, count=len(texts))
         results = reshape_results_vector(results=similars, shape=training_data.shape)
 
-        report = compare(results, training_data, 2)
+        report = compare(results, training_data, 1)
 
         # print(report)
+        report_df = pd.DataFrame(report)
+        # report_df.to_feather('save.feather')
 
         total_rating = calculate_total_rating(report)
         print('TOTAL:', total_rating)

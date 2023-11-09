@@ -68,8 +68,23 @@
               Compare two texts
             </a>
           </li>
+        </ul>
+
+        <ul class="nav flex-column">
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Examples</span>
+          <a class="link-secondary" href="#" aria-label="Add a new report">
+            <span data-feather="plus-circle"></span>
+          </a>
+        </h6>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'examples:example_list' %}">
+              <span data-feather="file"></span>
+              Example list
+            </a>
+          </li>
            <li class="nav-item">
-            <a class="nav-link" href="{% url 'analysis:example_frequency' %}">
+            <a class="nav-link" href="{% url 'examples:example_frequency' %}">
               <span data-feather="file"></span>
               Example frequency
             </a>

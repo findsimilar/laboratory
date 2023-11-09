@@ -31,7 +31,7 @@ class TestIndexView(SimpleTestCase):
         true_response = TrueResponse(
             status_code=200,
             content_values=[
-                '<h1>Still just main Page...</h1>'
+                '<h1>FindSimilar Laboratory</h1>'
             ]
         )
         current_response = request.get_response(self.client)

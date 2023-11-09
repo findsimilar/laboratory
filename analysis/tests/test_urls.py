@@ -29,10 +29,6 @@ class TestUrlsSimpleTestCase(SimpleTestCase):
                 'reverse': 'compare-two/',
             },
             {
-                'url': 'example_frequency',
-                'reverse': 'example-frequency/',
-            },
-            {
                 'url': 'load_training_data',
                 'reverse': 'load-training-data/',
             },

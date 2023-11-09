@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 {% block main %}
-<h1>Still just main Page...</h1>
+<h1>FindSimilar Laboratory</h1>
+<h2>Examples</h2>
+<ul class="list-group">
+    <li class="list-group-item">
+    <a class="link" href="{% url 'examples:example_list' %}">
+              <span data-feather="file"></span>
+              Example list
+            </a>
+    </li>
+    <li class="list-group-item">
+         <a class="link" href="{% url 'examples:example_frequency' %}">
+          <span data-feather="file"></span>
+          Example frequency
+        </a>
+    </li>
+</ul>
 {% endblock %}
 {% block results %}
     ...

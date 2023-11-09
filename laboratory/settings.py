@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django_find_similar',
     "debug_toolbar",
     # My
+    'examples',
     'core',
     'analysis',
 ]
