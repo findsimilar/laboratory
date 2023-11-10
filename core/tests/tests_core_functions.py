@@ -15,17 +15,6 @@ from core.core_functions import (
     compare, calculate_total_rating, load_training_data,
 )
 
-def eq(self, other):
-    # if other is None:
-    #     return False
-    return self.text == other.text
-
-# def lt(self, other):
-#     return self.cos < other.cos
-
-TokenText.__eq__ = eq
-# TokenText.__lt__ = lt
-
 
 class CoreFunctionsSimpleTestCase(SimpleTestCase):
 
